@@ -31,3 +31,34 @@ fostering a seamless exchange of items and academic services within the universi
 
 8. **Mobile Optimization**
    - Full functionality and enhanced user experience on mobile devices.
+
+## Setting Up a Local Development Environment
+
+### Prerequisites
+
+1. **Node.js**
+   - Install Node.js from the [official website](https://nodejs.org/).
+   - Verify the installation by running `node -v` and `npm -v` in the terminal.
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/zaidi-01/TMU-Connect
+cd TMU-Connect
+```
+
+### Install Dependencies
+
+```bash
+cd client
+npm install
+
+cd ../server
+npm install
+```
+
+### Start the Development Server
+
+```bash
+npm start
+```
