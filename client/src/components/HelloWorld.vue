@@ -15,9 +15,14 @@
           <li><a href="#">ITEMS FOR SALE</a></li>
           <li><a href="#">ITEMS WANTED</a></li>
           <li><a href="#">ACADEMIC SERVICES</a></li>
-          
         </ul>
       </nav>
+      
+      <div class="search-bar">
+        <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search TMU Connect...">
+        <button @click="performSearch">Search</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -64,6 +69,7 @@ export default {
   {
     padding: 15px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
 
   }
@@ -82,8 +88,6 @@ export default {
     display: flex;
   }
 
-
-
   .header-menu li
   {
     padding: 20px;
@@ -100,4 +104,24 @@ export default {
   {
     border-bottom: 2px solid blue;
   }
+
+  .search-bar
+  {
+    display: flex;
+    align-items: center;
+  }
+
+  .search-bar input
+  {
+    margin-right: 10px;
+  }
+
+  @media (max-width: 768px)
+  {
+    .search-bar
+    {
+      margin-left: auto;
+    }
+  }
+
 </style>
