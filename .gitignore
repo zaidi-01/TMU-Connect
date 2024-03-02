@@ -163,3 +163,6 @@ dist
 dist/
 npm-debug.log
 yarn-error.log
+
+### MacOS ###
+*.DS_Store
