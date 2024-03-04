@@ -1,7 +1,5 @@
 <template>
 <div>
-  
-
   <div class="header">
     <div class="welcome-message">
       <p>Welcome to TMU Connect! Your online marketplace for connecting with the TMU community.</p>
@@ -15,24 +13,46 @@
           <li><a href="#">ITEMS FOR SALE</a></li>
           <li><a href="#">ITEMS WANTED</a></li>
           <li><a href="#">ACADEMIC SERVICES</a></li>
+          <li><a href="#">MY ACCOUNT</a></li>
         </ul>
       </nav>
       
-      <div class="search-bar">
-        <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search TMU Connect...">
-        <button @click="performSearch">Search</button>
+      <div class="search-login-container">
+        <div class="search-bar">
+          <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search TMU Connect...">
+          <button class="search-button" @click="performSearch">Search</button>
+        </div>
+        
+        <a href="#">LOGIN/SIGN UP</a>
+
       </div>
-
-      
-
     </div>
   </div>
+
+  <div class="item-list">
+    <div class="item">
+      <img src="item1.jpg" alt="Item 1">
+      <h3>Item 1 Name</h3>
+      <p>Description of Item 1</p>
+      <p class="price">$9.99</p>
+      <button type="button">Add to Cart</button>
+    </div>
+
+    <div class="item">
+      <img src="item2.jpg" alt="Item 2">
+      <h3>Item 2 Name</h3>
+      <p>Description of Item 2</p>
+      <p class="price">$44.99</p>
+      <button type="button">Add to Cart</button>
+    </div>
+  </div>
+
 </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'ForSalePage',
   props: {
     msg: String
   }
@@ -94,6 +114,7 @@ export default {
   {
     padding: 20px;
     white-space: nowrap;
+    margin-right: 0px;
   }
 
   .header-menu a
@@ -107,6 +128,11 @@ export default {
     border-bottom: 2px solid blue;
   }
 
+  .search-login-container
+  {
+    display: flex;
+    align-items: center;
+  }
   .search-bar
   {
     display: flex;
@@ -115,7 +141,17 @@ export default {
 
   .search-bar input
   {
-    margin-right: 10px;
+    margin-right: 2px;
+  }
+
+  .search-button
+  {
+    margin-right: 15px;
+  }
+  
+  .login-button
+  {
+    margin-right: 25px;
   }
 
   @media (max-width: 768px)
@@ -124,6 +160,52 @@ export default {
     {
       margin-left: auto;
     }
+  }
+
+  .item-list
+  {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+  }
+
+  .item
+  {
+    width: 250px;
+    margin: 20px;
+    padding: 15px;
+    border: 1px solid black;
+    text-align: center;
+  }
+
+  .item img
+  {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .item h3
+  {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .item p
+  {
+    margin-bottom: 10px;
+  }
+
+  .price
+  {
+    font-weight: bold;
+    color: rgb(0, 0, 222);
+  }
+
+  button
+  {
+    background-color: rgb(255, 255, 138);
   }
 
 </style>
