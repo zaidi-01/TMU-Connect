@@ -39,6 +39,8 @@ fostering a seamless exchange of items and academic services within the universi
 1. **Node.js**
    - Install Node.js from the [official website](https://nodejs.org/).
    - Verify the installation by running `node -v` and `npm -v` in the terminal.
+2. **MySQL**
+   - Install MySQL from the [official website](https://dev.mysql.com/downloads/).
 
 ### Clone the Repository
 
@@ -56,6 +58,13 @@ npm install
 cd ../server
 npm install
 ```
+
+### Setup the Database
+
+1. Modify the `.env` file to configure the MySQL database.
+   - Update the `{USER}` and `{PASSWORD}` fields with your MySQL username and password.
+2. Deploy the database
+   - `npx prisma db push`
 
 ### Start the Development Server
 
