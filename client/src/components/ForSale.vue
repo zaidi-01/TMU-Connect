@@ -6,57 +6,82 @@
     </div>
     
     <div class="logo-menu-container">
+      <div class="dropdown-menu">
+        
+        <button @click="toggleDropdown">≡</button>
+
+        <div v-show="showDropdown">
+          <router-link v-for="link in navLinks" :key="link.id" :to="link.route" class="dropdown-link">
+            <div>
+              {{ link.text }}
+            </div>
+          </router-link>
+        </div>
+      </div>
       <img alt="TMU logo" src="@/assets/TMU_Logo.svg" width="100px">
 
       <nav class="header-menu">
         <ul>
-          <li><a href="#">ITEMS FOR SALE</a></li>
-          <li><a href="#">ITEMS WANTED</a></li>
-          <li><a href="#">ACADEMIC SERVICES</a></li>
-          <li><a href="#">MY ACCOUNT</a></li>
+          <li v-for="link in navLinks" :key="link.id">
+            <router-link :to="link.route">{{ link.text }}</router-link>
+          </li>
         </ul>
       </nav>
-      
+
       <div class="search-login-container">
         <div class="search-bar">
           <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search TMU Connect...">
-          <button class="search-button" @click="performSearch">Search</button>
+          <button class="search-button" @click="performSearch">&#128269;</button>
         </div>
         
-        <a href="#">LOGIN/SIGN UP</a>
+        <button class="login-button" @click="performLogin">&#128100;</button>
 
       </div>
     </div>
+    <router-link to="/post" class="post-item-link">Post an Item</router-link>
   </div>
 
   <div class="item-list">
-    <div class="item">
-      <img src="item1.jpg" alt="Item 1">
-      <h3>Item 1 Name</h3>
-      <p>Description of Item 1</p>
-      <p class="price">$9.99</p>
-      <button type="button">Add to Cart</button>
-    </div>
-
-    <div class="item">
-      <img src="item2.jpg" alt="Item 2">
-      <h3>Item 2 Name</h3>
-      <p>Description of Item 2</p>
-      <p class="price">$44.99</p>
+    <div class="item" v-for="item in items" :key="item.id">
+      <img :src="item.imageURL" :alt="Item.name">
+      <h3>{{  item.name  }}</h3>
+      <p>{{  item.description  }}</p>
+      <p class="price">${{  item.price.toFixed(2)  }}</p>
       <button type="button">Add to Cart</button>
     </div>
   </div>
-
 </div>
 </template>
 
 <script>
-export default {
+export default
+{
   name: 'ForSalePage',
-  props: {
-    msg: String
-  }
-}
+  data()
+  {
+    return {
+      navLinks:
+      [
+        {id: 1, text: 'ITEMS FOR SALE', route: '/for-sale'},
+        {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
+        {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
+        {id: 4, text: 'MY ACCOUNT', route: '/my-account'},
+      ],
+      showDropdown: false,
+    };
+  },
+  methods:
+  {
+    toggleDropdown()
+    {
+      this.showDropdown = !this.showDropdown;
+    },
+    performSearch()
+    {
+
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -89,11 +114,49 @@ export default {
 
   .logo-menu-container
   {
-    padding: 15px;
+    padding: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
+  }
+  
+  .dropdown-menu
+  {
+    display: none;
+    align-items: center;
+    box-sizing: border-box;
+    
+  }
+
+  .dropdown-menu button
+  {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+  }
+
+  .dropdown-menu div
+  {
+    display: block;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    box-sizing: content-box;
+  }
+
+  .dropdown-link
+  {
+    display: block; 
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    margin-bottom: 10px;
+    width: 160px;
+    height: 10px;
+    white-space: nowrap;
   }
   
   .header-menu
@@ -154,20 +217,12 @@ export default {
     margin-right: 25px;
   }
 
-  @media (max-width: 768px)
-  {
-    .search-bar
-    {
-      margin-left: auto;
-    }
-  }
-
   .item-list
   {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    padding: 20px;
+    padding-top: 150px;
   }
 
   .item
@@ -206,6 +261,29 @@ export default {
   button
   {
     background-color: rgb(255, 255, 138);
+  }
+
+  @media (max-width: 768px)
+  {
+
+    .search-bar
+    {
+      margin-left: auto;
+    }
+
+    .header-menu
+    {
+      display: none;
+    }
+
+    .dropdown-menu
+    {
+      display: block;
+    }
+    .dropdown-menu div
+    {
+      display: block;
+    }
   }
 
 </style>
