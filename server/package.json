@@ -2,10 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p . && tsc-alias",
+    "build:watch": "concurrently --raw --kill-others \"tsc -w -p .\" \"tsc-alias -w\"",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "tsx watch src/server.ts",
     "client": "npm run --prefix ../client serve"
