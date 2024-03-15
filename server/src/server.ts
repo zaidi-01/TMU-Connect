@@ -82,9 +82,17 @@ app.use(express.json());
 app.use(passport.initialize());
 
 /** Routes */
-app.use(ROUTES.AD.ROOT, adRoutes);
 app.use(ROUTES.AUTH.ROOT, authRoutes);
-app.use(ROUTES.USER.ROOT, userRoutes);
+app.use(
+  ROUTES.AD.ROOT,
+  passport.authenticate("jwt", { session: false }),
+  adRoutes
+);
+app.use(
+  ROUTES.USER.ROOT,
+  passport.authenticate("jwt", { session: false }),
+  userRoutes
+);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
