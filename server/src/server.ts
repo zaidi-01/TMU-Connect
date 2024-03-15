@@ -101,29 +101,30 @@ http.on("upgrade", (request, socket, head) => {
   }
 
   // TODO: Refactor this to use the authenticate middleware once token is stored in a cookie.
-  const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
-  if (!token) {
-    socket.destroy();
-    return;
-  }
-
-  let jwtPayload;
   try {
-    jwtPayload = jwt.verify(token, "secret") as JwtPayload;
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+    if (!token) {
+      socket.destroy();
+      return;
+    }
+
+    const jwtPayload = jwt.verify(token, "secret") as JwtPayload;
+
+    prisma.user
+      .findUnique({
+        where: {
+          id: jwtPayload.id,
+        },
+      })
+      .then((user) => {
+        if (!user) {
+          socket.destroy();
+          return;
+        }
+
+        websocketService.handleUpgrade(request, socket, head, user.id);
+      });
   } catch (error) {
     socket.destroy();
-    return;
   }
-
-  const user = prisma.user.findUnique({
-    where: {
-      id: jwtPayload.id,
-    },
-  });
-  if (!user) {
-    socket.destroy();
-    return;
-  }
-
-  websocketService.handleUpgrade(request, socket, head);
 });
