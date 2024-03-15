@@ -1,6 +1,6 @@
 import { RELATIVE_ROUTES } from "@contants";
 import { authenticate } from "@middlewares";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { Password } from "@utilities";
 import express from "express";
 import jwt from "jsonwebtoken";
@@ -51,7 +51,7 @@ router.post(RELATIVE_ROUTES.AUTH.LOGIN, authenticate("local"), (req, res) => {
     // TODO: Implement encryption for the token.
     // TODO: Add configuration options for the token.
     // TODO: Change this secret to something more secure or add a provider for secret.
-    const token = jwt.sign(req.user!, "secret");
+    const token = jwt.sign({ id: (req.user as User).id }, "secret");
     res.json({ token });
   });
 });
