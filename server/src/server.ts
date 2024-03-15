@@ -1,12 +1,13 @@
+import { ROUTES } from "@contants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
+import { websocketService } from "@services";
 import { Password } from "@utilities";
 import express from "express";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ROUTES } from "./constants/routes.constants";
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -87,6 +88,9 @@ app.use(ROUTES.AUTH.ROOT, authRoutes);
 app.use(ROUTES.AD.ROOT, authenticate(), adRoutes);
 app.use(ROUTES.USER.ROOT, authenticate(), userRoutes);
 
-app.listen(port, () => {
+const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+/** Websocket server */
+http.on("upgrade", websocketService.handleUpgrade);
