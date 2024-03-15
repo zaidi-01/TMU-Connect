@@ -30,7 +30,7 @@ passport.use(
           return done(null, false);
         }
 
-        return Password.comparePassword(password, user.password).then(
+        return Password.comparePassword(user.password, password).then(
           (isMatch) => {
             if (isMatch) {
               return done(null, user);

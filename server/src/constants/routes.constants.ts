@@ -9,6 +9,7 @@ const AD_ROUTES = {
 const AUTH_ROUTES = {
   ROOT: "/",
   REGISTER: "/register",
+  LOGIN: "/login",
 };
 const USER_ROUTES = {
   ROOT: "/",
