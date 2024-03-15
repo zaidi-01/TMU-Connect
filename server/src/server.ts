@@ -5,6 +5,7 @@ import { adRoutes, authRoutes, userRoutes } from "@routes";
 import { websocketService } from "@services";
 import { Password } from "@utilities";
 import express from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -93,4 +94,36 @@ const http = app.listen(port, () => {
 });
 
 /** Websocket server */
-http.on("upgrade", websocketService.handleUpgrade);
+http.on("upgrade", (request, socket, head) => {
+  if (request.url !== "/ws") {
+    socket.destroy();
+    return;
+  }
+
+  // TODO: Refactor this to use the authenticate middleware once token is stored in a cookie.
+  const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+  if (!token) {
+    socket.destroy();
+    return;
+  }
+
+  let jwtPayload;
+  try {
+    jwtPayload = jwt.verify(token, "secret") as JwtPayload;
+  } catch (error) {
+    socket.destroy();
+    return;
+  }
+
+  const user = prisma.user.findUnique({
+    where: {
+      id: jwtPayload.id,
+    },
+  });
+  if (!user) {
+    socket.destroy();
+    return;
+  }
+
+  websocketService.handleUpgrade(request, socket, head);
+});
