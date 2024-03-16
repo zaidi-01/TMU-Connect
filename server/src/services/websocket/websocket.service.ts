@@ -1,3 +1,5 @@
+import { webSocketController } from "@controllers";
+import { ExtWebSocket } from "@interfaces";
 import { IncomingMessage } from "http";
 import { Duplex } from "stream";
 import { WebSocket, WebSocketServer } from "ws";
@@ -24,6 +26,7 @@ wss.on("connection", (client: ExtWebSocket, userId: number) => {
   client.userId = userId;
 
   client.on("error", console.error);
+  client.on("message", webSocketController.handleMessage.bind(null, client));
   client.on("pong", heartbeat.bind(null, client));
 });
 
@@ -52,14 +55,4 @@ export function handleUpgrade(
  */
 function heartbeat(client: ExtWebSocket) {
   client.isAlive = true;
-}
-
-/**
- * Extended WebSocket interface
- */
-interface ExtWebSocket extends WebSocket {
-  /** Whether the client is alive */
-  isAlive: boolean;
-  /** User ID */
-  userId: number;
 }
