@@ -6,15 +6,30 @@ import { WebSocket, WebSocketServer } from "ws";
 const wss = new WebSocketServer({ noServer: true });
 const clients = new Map<number, WebSocket[]>();
 
-// TODO: Add ping cleanup for dead clients
+/** Dead client interval */
+const cleanupInterval = setInterval(() => {
+  wss.clients.forEach((client: WebSocket) => {
+    const extClient = client as ExtWebSocket;
 
-wss.on("connection", (client: WebSocket, userId: number) => {
+    if (extClient.isAlive === false) {
+      extClient.terminate();
+    }
+
+    extClient.isAlive = false;
+    extClient.ping();
+  });
+}, 30 * 1000);
+
+wss.on("connection", (client: ExtWebSocket, userId: number) => {
+  client.isAlive = true;
   addClient(userId, client);
 
-  client.on("close", () => {
-    removeClient(client);
-  });
+  client.on("error", console.error);
+  client.on("close", removeClient.bind(null, client));
+  client.on("pong", heartbeat.bind(null, client));
 });
+
+wss.on("close", clearInterval.bind(null, cleanupInterval));
 
 /**
  * Handle upgrade to websocket
@@ -55,4 +70,20 @@ function removeClient(client: WebSocket) {
       return;
     }
   }
+}
+
+/**
+ * Sets client as alive
+ * @param client The client
+ */
+function heartbeat(client: ExtWebSocket) {
+  client.isAlive = true;
+}
+
+/**
+ * Extended WebSocket interface
+ */
+interface ExtWebSocket extends WebSocket {
+  /** Whether the client is alive */
+  isAlive: boolean;
 }
