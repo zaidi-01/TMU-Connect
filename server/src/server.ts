@@ -9,6 +9,10 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi, { SwaggerUiOptions } from "swagger-ui-express";
+
+// TODO: Move initializations to their own files.
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -80,9 +84,38 @@ passport.use(
 const app = express();
 const port = process.env.PORT || 5000;
 
+/** Swagger */
+const swaggerUiOptions: SwaggerUiOptions = {
+  explorer: true,
+};
+const swaggerOptions = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "TMU-Connect API",
+      version: "0.1.0",
+      description:
+        "This is the API documentation for the TMU-Connect application.",
+    },
+    servers: [
+      {
+        url: `http://localhost:${port}`,
+        description: "Development server",
+      },
+    ],
+  },
+  apis: ["./src/routes/**/*.ts"],
+};
+const swaggerSpecs = swaggerJSDoc(swaggerOptions);
+
 /** Middlewares */
 app.use(express.json());
 app.use(passport.initialize());
+app.use(
+  ROUTES.DOCS_ROUTE.ROOT,
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
+);
 
 /** Routes */
 app.use(ROUTES.AUTH.ROOT, authRoutes);
