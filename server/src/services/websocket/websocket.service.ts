@@ -4,7 +4,6 @@ import { WebSocket, WebSocketServer } from "ws";
 
 /** Websocket server */
 const wss = new WebSocketServer({ noServer: true });
-const clients = new Map<number, WebSocket[]>();
 
 /** Dead client interval */
 const cleanupInterval = setInterval(() => {
@@ -22,10 +21,9 @@ const cleanupInterval = setInterval(() => {
 
 wss.on("connection", (client: ExtWebSocket, userId: number) => {
   client.isAlive = true;
-  addClient(userId, client);
+  client.userId = userId;
 
   client.on("error", console.error);
-  client.on("close", removeClient.bind(null, client));
   client.on("pong", heartbeat.bind(null, client));
 });
 
@@ -49,30 +47,6 @@ export function handleUpgrade(
 }
 
 /**
- * Add a client to the clients map
- * @param userId The user id
- * @param client The client
- */
-function addClient(userId: number, client: WebSocket) {
-  clients.set(userId, [...(clients.get(userId) || []), client]);
-}
-
-/**
- * Remove a client from the clients map
- * @param client The client
- */
-function removeClient(client: WebSocket) {
-  for (const [userId, userClients] of clients) {
-    const index = userClients.indexOf(client);
-    if (index !== -1) {
-      userClients.splice(index, 1);
-      clients.set(userId, userClients);
-      return;
-    }
-  }
-}
-
-/**
  * Sets client as alive
  * @param client The client
  */
@@ -86,4 +60,6 @@ function heartbeat(client: ExtWebSocket) {
 interface ExtWebSocket extends WebSocket {
   /** Whether the client is alive */
   isAlive: boolean;
+  /** User ID */
+  userId: number;
 }
