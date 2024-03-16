@@ -24,6 +24,13 @@ const cleanupInterval = setInterval(() => {
 wss.on("connection", (client: ExtWebSocket, userId: number) => {
   client.isAlive = true;
   client.userId = userId;
+  client.sendMessage = (message, cb) =>
+    client.send(JSON.stringify(message), cb);
+  client.sendError = (message, error, cb) =>
+    client.sendMessage(
+      { type: message.type, action: "error", data: error },
+      cb
+    );
 
   client.on("error", console.error);
   client.on("message", webSocketController.handleMessage.bind(null, client));

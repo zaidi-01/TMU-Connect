@@ -13,17 +13,17 @@ const messageHandlers: MessageHandlers = {};
  * @param client The client
  * @param message The message
  */
-export function handleMessage(client: ExtWebSocket, message: string) {
+export function handleMessage(client: ExtWebSocket, data: string) {
   try {
-    const data: WebSocketMessage = JSON.parse(message);
-    const handler = messageHandlers[data.action];
+    const message: WebSocketMessage = JSON.parse(data);
+    const handler = messageHandlers[message.action];
 
     if (!handler) {
-      console.error(`No handler for action: ${data.action}`);
+      client.sendError(message, "Invalid type");
       return;
     }
 
-    handler(client, data);
+    handler(client, message);
   } catch (error) {
     console.error(error);
     return;
