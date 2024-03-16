@@ -2,7 +2,7 @@ import { PrismaClient, User } from "@prisma/client";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Register } from "./interfaces";
+import { Register, Token } from "./interfaces";
 import asyncHandler = require("express-async-handler");
 
 /** Prisma client */
@@ -43,7 +43,7 @@ export const login = asyncHandler(async (req, res) => {
     // TODO: Implement encryption for the token.
     // TODO: Add configuration options for the token.
     // TODO: Change this secret to something more secure or add a provider for secret.
-    const token = jwt.sign({ id: (req.user as User).id }, "secret");
-    res.json({ token });
+    const accessToken = jwt.sign({ id: (req.user as User).id }, "secret");
+    res.json({ accessToken } as Token);
   });
 });
