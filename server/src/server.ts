@@ -104,7 +104,12 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./src/routes/**/*.ts", "./src/controllers/**/*.ts"],
+  apis: [
+    "./src/enums/**/*.enum.ts",
+    "./src/models/**/*.model.ts",
+    "./src/routes/**/*.routes.ts",
+    "./src/controllers/**/*.model.ts",
+  ],
 };
 const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 
