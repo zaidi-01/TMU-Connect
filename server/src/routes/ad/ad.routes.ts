@@ -7,6 +7,8 @@ const router = express.Router();
 
 /** Ad routes */
 
+// TODO: Add error responses for all routes.
+
 /**
  * Create an ad
  *
@@ -60,6 +62,26 @@ router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
  *               $ref: "#/components/schemas/AdDetailsDto"
  */
 router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
+
+/**
+ * Delete an ad
+ *
+ * @swagger
+ * /ad/{id}:
+ *   delete:
+ *     summary: Delete an ad
+ *     tags: [Ad]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       204:
+ *         description: Ad deleted
+ */
+router.delete(RELATIVE_ROUTES.AD.DELETE, adController.deleteAd);
 
 /**
  * Get ad details

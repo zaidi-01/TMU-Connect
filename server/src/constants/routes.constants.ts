@@ -8,6 +8,7 @@ const AD_ROUTES = {
   BASE: "/",
   CREATE: "/",
   UPDATE: "/:id",
+  DELETE: "/:id",
   DETAILS: "/:id",
 };
 const AUTH_ROUTES = {

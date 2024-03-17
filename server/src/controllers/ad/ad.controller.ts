@@ -55,6 +55,40 @@ export const updateAd = asyncHandler(async (req: Request, res: Response) => {
 });
 
 /**
+ * Delete an ad
+ * @param req Request
+ * @param res Response
+ */
+export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = (req.user as User).id;
+
+  const ad = (await prisma.ad.findUnique({
+    where: {
+      id: parseInt(id),
+    },
+  })) as Ad;
+
+  if (!ad) {
+    res.status(404);
+    throw new Error("Ad not found");
+  }
+
+  if (ad.userId !== userId) {
+    res.status(403);
+    throw new Error("Unauthorized");
+  }
+
+  await prisma.ad.delete({
+    where: {
+      id: parseInt(id),
+    },
+  });
+
+  res.status(204).end();
+});
+
+/**
  * Get ad details
  * @param req Request
  * @param res Response
