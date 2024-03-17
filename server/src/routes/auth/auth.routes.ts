@@ -21,7 +21,7 @@ const router = express.Router();
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Register'
+ *              $ref: '#/components/schemas/RegisterDto'
  *      responses:
  *        201:
  *          description: User created
@@ -62,7 +62,7 @@ router.post(RELATIVE_ROUTES.AUTH.REGISTER, authController.register);
  *          content:
  *            application/json:
  *              schema:
- *                $ref: '#/components/schemas/Token'
+ *                $ref: '#/components/schemas/TokenDto'
  *        400:
  *          description: Bad request
  */

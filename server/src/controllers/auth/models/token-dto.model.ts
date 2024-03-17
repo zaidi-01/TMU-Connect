@@ -4,7 +4,7 @@
  * @swagger
  *  components:
  *    schemas:
- *      Token:
+ *      TokenDto:
  *        type: object
  *        properties:
  *          accessToken:
@@ -14,9 +14,9 @@
  *        required:
  *          - accessToken
  */
-export interface Token {
+export interface TokenDto {
   /** User's token */
   accessToken: string;
 }
 
-export default Token;
+export default TokenDto;

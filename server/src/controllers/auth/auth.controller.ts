@@ -1,9 +1,9 @@
 import { PrismaClient, User } from "@prisma/client";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
+import { default as asyncHandler } from "express-async-handler";
 import jwt from "jsonwebtoken";
-import { Register, Token } from "./interfaces";
-import asyncHandler = require("express-async-handler");
+import { RegisterDto, TokenDto } from "./models";
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 /** Auth controller */
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
-  const { name, email, password } = req.body as Register;
+  const { name, email, password } = req.body as RegisterDto;
   const hashedPassword = await Password.hashPassword(password);
 
   // TODO: Add input validation
@@ -21,7 +21,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
       name: name,
       email: email,
       password: hashedPassword,
-    },
+    } as User,
   });
 
   res.status(201);
@@ -44,6 +44,6 @@ export const login = asyncHandler(async (req, res) => {
     // TODO: Add configuration options for the token.
     // TODO: Change this secret to something more secure or add a provider for secret.
     const accessToken = jwt.sign({ id: (req.user as User).id }, "secret");
-    res.json({ accessToken } as Token);
+    res.json({ accessToken } as TokenDto);
   });
 });
