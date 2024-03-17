@@ -7,6 +7,7 @@ const USER_ROUTE = "/user";
 const AD_ROUTES = {
   BASE: "/",
   CREATE: "/",
+  UPDATE: "/:id",
   DETAILS: "/:id",
 };
 const AUTH_ROUTES = {

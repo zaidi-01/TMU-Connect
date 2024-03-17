@@ -30,7 +30,7 @@ import { AdType } from "../enums";
  *         - description
  *         - price
  */
-interface AdCreateDto {
+interface AdCreateUpdateDto {
   /** The type of the ad. */
   type: AdType;
   /** The title of the ad. */
@@ -41,4 +41,4 @@ interface AdCreateDto {
   price: number;
 }
 
-export default AdCreateDto;
+export default AdCreateUpdateDto;

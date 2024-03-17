@@ -32,6 +32,36 @@ const router = express.Router();
 router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
 
 /**
+ * Update an ad
+ *
+ * @swagger
+ * /ad/{id}:
+ *   put:
+ *     summary: Update an ad
+ *     tags: [Ad]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/AdCreateDto"
+ *     responses:
+ *       200:
+ *         description: Ad updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/AdDetailsDto"
+ */
+router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
+
+/**
  * Get ad details
  *
  * @swagger
