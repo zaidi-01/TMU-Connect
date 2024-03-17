@@ -117,15 +117,15 @@ const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 app.use(express.json());
 app.use(passport.initialize());
 app.use(
-  ROUTES.DOCS_ROUTE.ROOT,
+  ROUTES.DOCS_ROUTE.BASE,
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
 );
 
 /** Routes */
-app.use(ROUTES.AUTH.ROOT, authRoutes);
-app.use(ROUTES.AD.ROOT, authenticate(), adRoutes);
-app.use(ROUTES.USER.ROOT, authenticate(), userRoutes);
+app.use(ROUTES.AUTH.BASE, authRoutes);
+app.use(ROUTES.AD.BASE, authenticate(), adRoutes);
+app.use(ROUTES.USER.BASE, authenticate(), userRoutes);
 
 const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
