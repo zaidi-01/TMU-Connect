@@ -13,9 +13,8 @@ const router = express.Router();
  * @swagger
  * /ad/{id}:
  *   get:
- *     tags:
- *       - Ad
- *     description: Get ad details
+ *     summary: Get ad details
+ *     tags: [Ad]
  *     parameters:
  *       - in: path
  *         name: id
