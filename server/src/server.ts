@@ -87,6 +87,11 @@ const port = process.env.PORT || 5000;
 /** Swagger */
 const swaggerUiOptions: SwaggerUiOptions = {
   explorer: true,
+  swaggerOptions: {
+    tagsSorter: "alpha",
+    operationsSorter: "alpha",
+    persistAuthorization: true,
+  },
 };
 const swaggerOptions = {
   definition: {
@@ -101,6 +106,20 @@ const swaggerOptions = {
       {
         url: `http://localhost:${port}`,
         description: "Development server",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
