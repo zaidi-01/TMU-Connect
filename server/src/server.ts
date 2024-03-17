@@ -108,6 +108,7 @@ const swaggerOptions = {
     "./src/enums/**/*.enum.ts",
     "./src/models/**/*.model.ts",
     "./src/routes/**/*.routes.ts",
+    "./src/controllers/**/*.enum.ts",
     "./src/controllers/**/*.model.ts",
   ],
 };
