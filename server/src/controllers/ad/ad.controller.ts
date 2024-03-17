@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { Ad, PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
 import { AdDetailsDto } from "./models";
+import AdCreateDto from "./models/ad-create-dto.model";
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -31,3 +32,23 @@ export const getAdDetails = asyncHandler(
     res.status(200).json(ad);
   }
 );
+
+/**
+ * Create an ad
+ * @param req Request
+ * @param res Response
+ */
+export const createAd = asyncHandler(async (req: Request, res: Response) => {
+  const adDto = req.body as AdCreateDto;
+
+  const ad = {
+    ...adDto,
+    userId: (req.user as User).id,
+  } as Ad;
+
+  const createdAd = await prisma.ad.create({
+    data: ad,
+  });
+
+  res.status(201).json(createdAd);
+});

@@ -8,6 +8,30 @@ const router = express.Router();
 /** Ad routes */
 
 /**
+ * Create an ad
+ *
+ * @swagger
+ * /ad:
+ *   post:
+ *     summary: Create an ad
+ *     tags: [Ad]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/AdCreateDto"
+ *     responses:
+ *       201:
+ *         description: Ad created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/AdDetailsDto"
+ */
+router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
+
+/**
  * Get ad details
  *
  * @swagger
