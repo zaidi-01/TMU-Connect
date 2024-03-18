@@ -1,3 +1,4 @@
+import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
 import { Password } from "@utilities";
@@ -83,16 +84,8 @@ app.use(passport.initialize());
 
 /** Routes */
 app.use(ROUTES.AUTH.ROOT, authRoutes);
-app.use(
-  ROUTES.AD.ROOT,
-  passport.authenticate("jwt", { session: false }),
-  adRoutes
-);
-app.use(
-  ROUTES.USER.ROOT,
-  passport.authenticate("jwt", { session: false }),
-  userRoutes
-);
+app.use(ROUTES.AD.ROOT, authenticate(), adRoutes);
+app.use(ROUTES.USER.ROOT, authenticate(), userRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
