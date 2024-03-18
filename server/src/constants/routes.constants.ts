@@ -8,6 +8,8 @@ const AD_ROUTES = {
 };
 const AUTH_ROUTES = {
   ROOT: "/",
+  REGISTER: "/register",
+  LOGIN: "/login",
 };
 const USER_ROUTES = {
   ROOT: "/",
@@ -42,4 +44,6 @@ export const ROUTES = {
  */
 export const RELATIVE_ROUTES = {
   AD: AD_ROUTES,
+  AUTH: AUTH_ROUTES,
+  USER: USER_ROUTES,
 };

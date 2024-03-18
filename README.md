@@ -61,9 +61,11 @@ npm install
 
 ### Setup the Database
 
-1. Modify the `.env` file to configure the MySQL database.
+1. Copy the `.env.example` file to `.env`.
+   - `cp .env.example .env`
+2. Modify the `.env` file to configure the MySQL database.
    - Update the `{USER}` and `{PASSWORD}` fields with your MySQL username and password.
-2. Deploy the database
+3. Deploy the database
    - `npx prisma db push`
 
 ### Start the Development Server

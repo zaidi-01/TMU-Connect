@@ -13,4 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum definitions
+enum Role {
+  USER
+  ADMIN
+}
+
 // Model definitions
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  role     Role   @default(USER)
+}
