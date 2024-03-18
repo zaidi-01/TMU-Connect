@@ -1,15 +1,13 @@
 <template>
-  <ForSale msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import ForSale from './components/ForSale.vue'
 
 export default {
   name: 'App',
-  components: {
-    ForSale
-  }
 }
 </script>
 
