@@ -1,12 +1,14 @@
+import { ROUTES } from "@contants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
+import { websocketService } from "@services";
 import { Password } from "@utilities";
 import express from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { ROUTES } from "./constants/routes.constants";
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -87,6 +89,42 @@ app.use(ROUTES.AUTH.ROOT, authRoutes);
 app.use(ROUTES.AD.ROOT, authenticate(), adRoutes);
 app.use(ROUTES.USER.ROOT, authenticate(), userRoutes);
 
-app.listen(port, () => {
+const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+/** Websocket server */
+http.on("upgrade", (request, socket, head) => {
+  if (request.url !== "/ws") {
+    socket.destroy();
+    return;
+  }
+
+  // TODO: Refactor this to use the authenticate middleware once token is stored in a cookie.
+  try {
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+    if (!token) {
+      socket.destroy();
+      return;
+    }
+
+    const jwtPayload = jwt.verify(token, "secret") as JwtPayload;
+
+    prisma.user
+      .findUnique({
+        where: {
+          id: jwtPayload.id,
+        },
+      })
+      .then((user) => {
+        if (!user) {
+          socket.destroy();
+          return;
+        }
+
+        websocketService.handleUpgrade(request, socket, head, user.id);
+      });
+  } catch (error) {
+    socket.destroy();
+  }
 });

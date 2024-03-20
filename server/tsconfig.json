@@ -31,8 +31,11 @@
     "baseUrl": "./",                                     /* Specify the base directory to resolve non-relative module names. */
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@contants": ["src/constants"],
+      "@controllers": ["src/controllers"],
+      "@interfaces": ["src/interfaces"],
       "@middlewares": ["src/middlewares"],
       "@routes": ["src/routes"],
+      "@services": ["src/services"],
       "@utilities": ["src/utilities"],
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
