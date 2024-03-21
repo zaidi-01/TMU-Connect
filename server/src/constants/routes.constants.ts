@@ -1,6 +1,7 @@
 // Base routes for the application.
 const AD_ROUTE = "/ad";
 const AUTH_ROUTE = "/auth";
+const DOCS_ROUTE = "/docs";
 const USER_ROUTE = "/user";
 
 const AD_ROUTES = {
@@ -10,6 +11,9 @@ const AUTH_ROUTES = {
   ROOT: "/",
   REGISTER: "/register",
   LOGIN: "/login",
+};
+const DOCS_ROUTES = {
+  ROOT: "/",
 };
 const USER_ROUTES = {
   ROOT: "/",
@@ -36,6 +40,7 @@ function generateAbsoluteRoutes<T extends Record<string, string>>(
 export const ROUTES = {
   AD: generateAbsoluteRoutes(AD_ROUTE, AD_ROUTES),
   AUTH: generateAbsoluteRoutes(AUTH_ROUTE, AUTH_ROUTES),
+  DOCS_ROUTE: generateAbsoluteRoutes(DOCS_ROUTE, DOCS_ROUTES),
   USER: generateAbsoluteRoutes(USER_ROUTE, USER_ROUTES),
 };
 
@@ -45,5 +50,6 @@ export const ROUTES = {
 export const RELATIVE_ROUTES = {
   AD: AD_ROUTES,
   AUTH: AUTH_ROUTES,
+  DOCS: DOCS_ROUTES,
   USER: USER_ROUTES,
 };
