@@ -37,7 +37,7 @@
                 <button class="login-button" @click="performLogin">&#128100;</button>
             </div>
         </div>
-        <router-link to="/post" class="post-item-link">Post an Item</router-link>
+        <router-link to="/new-post" class="post-item-link">Post an Item</router-link>
     </div>
 </template>
 
@@ -67,7 +67,7 @@ export default
     },
     performSearch()
     {
-
+      
     },
     performLogin()
     {
