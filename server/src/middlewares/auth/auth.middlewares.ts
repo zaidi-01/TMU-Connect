@@ -1,12 +1,12 @@
-import { Role, User } from "@prisma/client";
+import { UserRole, User } from "@prisma/client";
 import passport from "passport";
 
 /**
  * Access levels for each role
  */
-const accessLevels: Record<Role, number> = {
-  [Role.USER]: 0,
-  [Role.ADMIN]: 1,
+const accessLevels: Record<UserRole, number> = {
+  [UserRole.USER]: 0,
+  [UserRole.ADMIN]: 1,
 };
 
 /**
@@ -22,7 +22,7 @@ export function authenticate(strategy: "jwt" | "local" = "jwt") {
  * Middleware to allow access to certain routes based on role
  * @param role The role to allow access and above
  */
-export function allow(role: Role) {
+export function allow(role: UserRole) {
   return (req: any, res: any, next: any) => {
     if (accessLevels[(req.user as User).role] < accessLevels[role]) {
       res.status(403).send("Forbidden");

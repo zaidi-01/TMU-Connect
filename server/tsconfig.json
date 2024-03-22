@@ -32,8 +32,10 @@
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@contants": ["src/constants"],
       "@controllers": ["src/controllers"],
+      "@enums": ["src/enums"],
       "@interfaces": ["src/interfaces"],
       "@middlewares": ["src/middlewares"],
+      "@models": ["src/models"],
       "@routes": ["src/routes"],
       "@services": ["src/services"],
       "@utilities": ["src/utilities"],

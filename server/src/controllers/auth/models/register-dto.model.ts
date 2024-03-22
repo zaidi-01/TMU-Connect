@@ -4,7 +4,7 @@
  * @swagger
  *  components:
  *    schemas:
- *      Register:
+ *      RegisterDto:
  *        type: object
  *        properties:
  *          name:
@@ -24,7 +24,7 @@
  *          - email
  *          - password
  */
-interface Register {
+interface RegisterDto {
   /**
    * User's name
    */
@@ -39,4 +39,4 @@ interface Register {
   password: string;
 }
 
-export default Register;
+export default RegisterDto;
