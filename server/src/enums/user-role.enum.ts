@@ -1,5 +1,6 @@
 /**
  * Represents the roles that a user can have.
+ *
  * @swagger
  * components:
  *   schemas:
