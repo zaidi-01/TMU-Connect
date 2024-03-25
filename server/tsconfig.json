@@ -11,7 +11,7 @@
     // "disableReferencedProjectLoad": true,             /* Reduce the number of projects loaded automatically by TypeScript. */
 
     /* Language and Environment */
-    "target": "es6",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "target": "es6",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     // "lib": [],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
     // "jsx": "preserve",                                /* Specify what JSX code is generated. */
     // "experimentalDecorators": true,                   /* Enable experimental support for legacy experimental decorators. */
@@ -32,8 +32,10 @@
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@contants": ["src/constants"],
       "@controllers": ["src/controllers"],
+      "@enums": ["src/enums"],
       "@interfaces": ["src/interfaces"],
       "@middlewares": ["src/middlewares"],
+      "@models": ["src/models"],
       "@routes": ["src/routes"],
       "@services": ["src/services"],
       "@utilities": ["src/utilities"],
