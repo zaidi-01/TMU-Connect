@@ -1,5 +1,43 @@
 <template>
-    <div>
-        <h1>My Account</h1>
-    </div>
+<div>
+    <Header />
+</div>
 </template>
+
+<script>
+import Header from './Header.vue'
+
+export default
+{
+    name: 'MyAccount',
+    components:
+    {
+        Header
+    },
+    data()
+    {
+        return {
+            navLinks:
+            [
+                { id: 1, text: 'ITEMS FOR SALE', route: '/' },
+                {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
+                {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
+                {id: 4, text: 'MY ACCOUNT', route: '/my-account'},
+            ],
+            showDropdown: false,
+        };
+    },
+    
+    methods:
+    {
+        toggleDropdown()
+        {
+            this.showDropdown = !this.showDropdown;
+        },
+        performSearch()
+        {
+
+        },
+    },
+};
+</script>

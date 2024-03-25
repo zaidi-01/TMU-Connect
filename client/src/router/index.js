@@ -3,6 +3,7 @@ import ForSale from '@/components/ForSale.vue';
 import ItemsWanted from '@/components/ItemsWanted.vue';
 import AcademicServices from '@/components/AcademicServices.vue';
 import MyAccount from '@/components/MyAccount.vue';
+import NewPost from '@/components/NewPost.vue';
 
 const routes = [
     {
@@ -28,6 +29,13 @@ const routes = [
         name: 'MyAccount',
         component: MyAccount,
     },
+
+    {
+        path: '/new-post',
+        name: 'NewPost',
+        component: NewPost,
+    },
+
 ];
 
 const router = createRouter(
