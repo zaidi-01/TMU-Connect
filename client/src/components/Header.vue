@@ -37,7 +37,6 @@
                 <button class="login-button" @click="performLogin">&#128100;</button>
             </div>
         </div>
-        <router-link to="/new-post" class="post-item-link">Post an Item</router-link>
     </div>
 </template>
 
@@ -53,7 +52,7 @@ export default
         { id: 1, text: 'ITEMS FOR SALE', route: '/' },
         {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
         {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
-        {id: 4, text: 'MY ACCOUNT', route: '/my-account'},
+        {id: 4, text: 'MAKE NEW POST', route: '/new-post'},
       ],
       showDropdown: false,
       searchQuery: '',
