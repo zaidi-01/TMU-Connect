@@ -5,18 +5,22 @@ const DOCS_ROUTE = "/docs";
 const USER_ROUTE = "/user";
 
 const AD_ROUTES = {
-  ROOT: "/",
+  BASE: "/",
+  CREATE: "/",
+  UPDATE: "/:id",
+  DELETE: "/:id",
+  DETAILS: "/:id",
 };
 const AUTH_ROUTES = {
-  ROOT: "/",
+  BASE: "/",
   REGISTER: "/register",
   LOGIN: "/login",
 };
 const DOCS_ROUTES = {
-  ROOT: "/",
+  BASE: "/",
 };
 const USER_ROUTES = {
-  ROOT: "/",
+  BASE: "/",
 };
 
 /**
