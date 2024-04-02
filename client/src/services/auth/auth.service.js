@@ -43,4 +43,15 @@ export const register = async (name, email, password) => {
   return response.data;
 };
 
-// TODO: Implement logout.
+/**
+ * Logs out a user.
+ * @returns {Promise} Fulfills when the user is logged out, rejects otherwise.
+ */
+export const logout = async () => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/logout")
+      .then(() => resolve())
+      .catch((error) => reject(error));
+  });
+};

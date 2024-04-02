@@ -9,7 +9,7 @@ const router = express.Router();
 /** Auth routes */
 
 /**
- * Is authenticated route
+ * Is authenticated route.
  *
  * @swagger
  * /auth:
@@ -22,13 +22,10 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.get(
-  RELATIVE_ROUTES.AUTH.BASE,
-  authController.isAuthenticated
-);
+router.get(RELATIVE_ROUTES.AUTH.BASE, authController.isAuthenticated);
 
 /**
- * Register route
+ * Register route.
  *
  * @swagger
  * /auth/register:
@@ -50,7 +47,7 @@ router.get(
 router.post(RELATIVE_ROUTES.AUTH.REGISTER, authController.register);
 
 /**
- * Login route
+ * Login route.
  *
  * @swagger
  * /auth/login:
@@ -87,5 +84,19 @@ router.post(
   authenticate("local"),
   authController.login
 );
+
+/**
+ * Logout route.
+ *
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User logged out
+ */
+router.post(RELATIVE_ROUTES.AUTH.LOGOUT, authController.logout);
 
 export default router;

@@ -28,7 +28,7 @@ export const isAuthenticated = asyncHandler(async (req, res) => {
 
 /**
  * Register a new user.
- * 
+ *
  * @param req Request.
  * @param res Response.
  */
@@ -80,4 +80,14 @@ export const login = asyncHandler(async (req, res) => {
       })
       .sendStatus(200);
   });
+});
+
+/**
+ * Logout a user.
+ *
+ * @param req Request.
+ * @param res Response.
+ */
+export const logout = asyncHandler(async (_, res) => {
+  res.clearCookie(COOKIE_NAME).sendStatus(200);
 });
