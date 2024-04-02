@@ -1,9 +1,10 @@
 import { Ad, PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
-import { AdCreateUpdateDto, AdDetailsDto } from "./models";
+import { AdCreateUpdateDto, AdDetailsDto, AdSearchDto } from "./models";
 
 /** Prisma client */
+
 const prisma = new PrismaClient();
 
 /** Ad controller */
@@ -70,13 +71,13 @@ export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
   })) as Ad;
 
   if (!ad) {
-    res.status(404);
-    throw new Error("Ad not found");
+    res.sendStatus(404);
+    return;
   }
 
   if (ad.userId !== userId) {
-    res.status(403);
-    throw new Error("Unauthorized");
+    res.sendStatus(403);
+    return;
   }
 
   await prisma.ad.delete({
@@ -85,7 +86,7 @@ export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
-  res.status(204).end();
+  res.sendStatus(204);
 });
 
 /**
@@ -104,10 +105,31 @@ export const getAdDetails = asyncHandler(
     })) as AdDetailsDto;
 
     if (!ad) {
-      res.status(404);
-      throw new Error("Ad not found");
+      res.sendStatus(404);
+      return;
     }
 
     res.status(200).json(ad);
   }
 );
+
+/**
+ * Search ads.
+ * @param req Request.
+ * @param res Response.
+ */
+export const searchAds = asyncHandler(async (req: Request, res: Response) => {
+  const { query, take, skip } = req.body as AdSearchDto;
+
+  const ads = (await prisma.ad.findMany({
+    where: {
+      title: {
+        contains: query,
+      },
+    },
+    take: take,
+    skip: skip,
+  })) as AdDetailsDto[];
+
+  res.status(200).json(ads);
+});
