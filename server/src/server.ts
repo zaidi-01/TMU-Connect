@@ -9,7 +9,6 @@ import express from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 import { Strategy as CookieStrategy } from "passport-cookie";
-import { ExtractJwt } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi, { SwaggerUiOptions } from "swagger-ui-express";
@@ -195,7 +194,7 @@ http.on("upgrade", (request, socket, head) => {
 
   // TODO: Refactor this to use the authenticate middleware once token is stored in a cookie.
   try {
-    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+    const token = request.headers.cookie?.split("=")[1].split(";")[0];
     if (!token) {
       socket.destroy();
       return;
