@@ -68,6 +68,7 @@ export default {
 
       authService.login(this.email, this.password)
         .then(() => {
+          // TODO: add redirection to the previous page
           // Redirect to home page
           this.$router.push('/');
         })

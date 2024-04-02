@@ -22,7 +22,11 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.get(RELATIVE_ROUTES.AUTH.BASE, authController.isAuthenticated);
+router.get(
+  RELATIVE_ROUTES.AUTH.BASE,
+  authenticate(),
+  authController.isAuthenticated
+);
 
 /**
  * Register route.
