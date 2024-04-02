@@ -5,6 +5,19 @@ import { RegisterDto } from "./models";
 axios.defaults.baseURL = "/api/auth";
 
 /**
+ * Checks if a user is authenticated.
+ * @returns {Promise<boolean>} True if the user is authenticated, false otherwise.
+ */
+export const isAuthenticated = async () => {
+  try {
+    await axios.get("/");
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
  * Logs in a user.
  * @param {string} email The user's email.
  * @param {string} password The user's password.
