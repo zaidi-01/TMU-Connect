@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-  <img src="../assets/TMU_Logo.svg" alt="TMU Logo" class="logo">
+    <img src="../assets/TMU_Logo.svg" alt="TMU Logo" class="logo">
     <div class="login-form-container">
       <div class="login-form">
         <h1>Log In</h1>
@@ -13,7 +13,7 @@
 
 
         <form @submit.prevent="login">
-        <div v-if="error" class="error-message">{{ error }}</div>
+          <div v-if="error" class="error-message">{{ error }}</div>
 
           <div class="input-field">
             <label for="email">Email*</label>
@@ -46,52 +46,37 @@
 
 
 <script>
-import axios from 'axios';
+import { authService } from '@/services';
 
 export default {
   data() {
     return {
-      links: [{ name: 'Create account', to: '/signup' }],
+      links: [{ name: 'Create account', to: '/register' }],
       email: '',
       password: '',
       error: '',
     };
   },
   methods: {
-
     login() {
-      // User login info
-      const userInfo = {
-        email: this.email,
-        password: this.password,
-      };
-      
-      }
       // User must enter information for both fields
-      if (!this.email || !this.password){
+      if (!this.email || !this.password) {
         alert('Please fill in all required fields.');
         this.error = "Please fill in all required fields.";
         return;
       }
 
-      
-      axios.post('/api/auth/login', userInfo)
-      .then(response => {
-        if (response.status === 200) {
-          // Login was successful
-          alert('Login successful');
-          // Redirect to the dashboard page, ADD THE CORRECT PATH
-          this.$router.push('/dashboard');
-        } else {
-          // Handle other statuses or specific conditions as needed
-          this.error = 'Invalid email or password. Please try again.';
-        }
-      })
-      .catch(error => {
-        // Login failed 
-        console.error('Login error:', error);
-        this.error = 'An error occurred during login. Please try again.';
-      });
+      authService.login(this.email, this.password)
+        .then(() => {
+          // Redirect to home page
+          this.$router.push('/');
+        })
+        .catch(error => {
+          // TODO: Add error handling
+          // Login failed 
+          console.error('Login error:', error);
+          this.error = 'An error occurred during login. Please try again.';
+        });
     },
   },
 };
@@ -100,35 +85,35 @@ export default {
 
 
 <style scoped>
-
 .login-page {
   display: flex;
   position: relative;
   min-height: 100vh;
 }
 
-.login-form-container, .right-side {
+.login-form-container,
+.right-side {
   flex: 1;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
 }
 
 .logo {
-  position: absolute; 
-  top: 10px; 
-  left: 10px; 
-  height: 80px; 
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 80px;
   width: auto;
 }
 
 .right-side h2 {
-  margin: 0; 
+  margin: 0;
 }
 
 
 .login-form {
-  max-width: 400px; 
+  max-width: 400px;
   width: 100%;
 }
 
@@ -178,7 +163,7 @@ export default {
 .login-btn {
   width: 100%;
   padding: 1em;
-  background-color: #163a96; 
+  background-color: #163a96;
   border: none;
   color: white;
   cursor: pointer;
@@ -191,35 +176,35 @@ export default {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  background-color: #163a96; 
-  height: 100vh; 
-  margin: 0; 
-  padding: 0; 
-  color: white; 
+  background-color: #163a96;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: white;
 }
 
 .right-side ul {
   list-style: none;
-  padding: 0; 
+  padding: 0;
 }
 
 .right-side li {
-  margin-bottom: 0.5em; 
-  position: relative; 
-  padding-left: 30px; 
+  margin-bottom: 0.5em;
+  position: relative;
+  padding-left: 30px;
 }
 
 .right-side li::before {
-  content: '✔'; 
-  color: yellow; 
-  font-size: 24px; 
-  position: absolute; 
-  left: 0; 
-  top: 0; 
+  content: '✔';
+  color: yellow;
+  font-size: 24px;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .right-side h1 {
-  font-size: 4em; 
+  font-size: 4em;
 }
 
 
@@ -229,11 +214,7 @@ export default {
   }
 
   .right-side {
-    order: 1; 
+    order: 1;
   }
 }
 </style>
-
-
-
-
