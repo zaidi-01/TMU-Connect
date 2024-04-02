@@ -25,7 +25,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     } as User,
   });
 
-  res.status(201);
+  res.status(201).end();
 });
 
 export const login = asyncHandler(async (req, res) => {
