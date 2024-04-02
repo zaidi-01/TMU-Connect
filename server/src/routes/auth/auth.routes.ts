@@ -9,6 +9,25 @@ const router = express.Router();
 /** Auth routes */
 
 /**
+ * Is authenticated route
+ *
+ * @swagger
+ * /auth:
+ *   get:
+ *     summary: Check if user is authenticated
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User is authenticated
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  RELATIVE_ROUTES.AUTH.BASE,
+  authController.isAuthenticated
+);
+
+/**
  * Register route
  *
  * @swagger
@@ -59,10 +78,6 @@ router.post(RELATIVE_ROUTES.AUTH.REGISTER, authController.register);
  *     responses:
  *       200:
  *         description: User logged in
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/TokenDto"
  *       400:
  *         description: Bad request
  */
