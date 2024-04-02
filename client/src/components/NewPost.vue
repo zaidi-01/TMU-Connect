@@ -5,12 +5,12 @@
         <div class="post-container">
             <h2>Add a New Post</h2>
             <form class="post-form" @sumbit.prevent="handleSubmit">
-            <div type="postType">
+            <div type="type">
                 <label>Post Type:</label>
-                <select v-model="postType">
-                    <option value="Items for Sale">Item for Sale</option>
-                    <option value="Items Wanted">Item Wanted</option>
-                    <option value="Academic Services">Academic Service</option>
+                <select v-model="type">
+                    <option value="SALE">Item for Sale</option>
+                    <option value="WANTED">Item Wanted</option>
+                    <option value="SERVICE">Academic Service</option>
                 </select>
             </div>
             <div>
@@ -32,7 +32,7 @@
     
             <div class="price">
                 <label>Price:</label>
-                <textarea v-model="price"></textarea>
+                <input type="number" v-model="price" />
             </div>
     
             <button type="submit">Add Post</button>
@@ -58,16 +58,15 @@
             navLinks:
             [
             { id: 1, text: 'ITEMS FOR SALE', route: '/' },
-            {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
-            {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
-            {id: 4, text: 'MAKE NEW POST', route: '/new-post'},
+            {id: 2, text: 'MAKE NEW POST', route: '/new-post'},
             ],
             showDropdown: false,
     
-            title:'',
-            content:'',
-            postType: 'Items for Sale', // Default Value
-            image: null
+            "type": 'SALE', // Default Value
+            "title":'',
+            "image": null,
+            "description":'',
+            "price":'', 
             };
         },
     
@@ -92,14 +91,14 @@
                 { 
                     title: this.title,
                     description: this.description,
-                    postType: this.postType
+                    type: this.type
                 };
     
                 const formData = new formData();
                 formData.append('image', this.image);
                 formData.append('post', JSON.stringify(newPost));
     
-                fetch('',
+                fetch('./api/ad/',
                 {
                     method: 'POST',
                     body: formData
@@ -111,22 +110,7 @@
                     this.$emit('postAdded', data);
                     this.title = '';
                     this.description = '';
-                    this.postType = 'Items for Sale'; // Reset after submission
-    
-                    switch (data.postType)
-                    {
-                        case 'Items for Sale':
-                        this.$router.push('/');
-                        break;
-                        case 'Items Wanted':
-                        this.$router.push('/items-wanted');
-                        break;
-                        case 'Academic Services':
-                        this.$router.push('/academic-services');
-                        break;
-                        default:
-                        this.$router.push('/items-wanted');
-                    }
+                    this.type = 'Items for Sale'; // Reset after submission
                 })
                 .catch(error => console.error('Error adding post:', error));
             }

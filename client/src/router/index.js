@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ForSale from '@/components/ForSale.vue';
+import Home from '@/components/Home.vue';
 import ItemsWanted from '@/components/ItemsWanted.vue';
 import AcademicServices from '@/components/AcademicServices.vue';
 import MyAccount from '@/components/MyAccount.vue';
@@ -9,7 +9,7 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        component: ForSale,
+        component: Home,
     },
 
     {
