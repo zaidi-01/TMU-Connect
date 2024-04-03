@@ -1,4 +1,4 @@
-import { RELATIVE_ROUTES } from "@contants";
+import { RELATIVE_ROUTES } from "@constants";
 import { authController } from "@controllers";
 import { authenticate } from "@middlewares";
 import express from "express";

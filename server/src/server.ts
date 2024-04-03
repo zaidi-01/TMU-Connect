@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ROUTES } from "@contants";
+import { COOKIE_NAME, ROUTES } from "@constants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
