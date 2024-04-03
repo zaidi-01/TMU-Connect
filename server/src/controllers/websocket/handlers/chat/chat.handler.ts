@@ -15,6 +15,9 @@ export async function handleMessage(
     case Action.SEND_AD_MESSAGE:
       await chatController.sendAdMessage(client, message);
       break;
+    case Action.ROOM_LIST:
+      await chatController.getRooms(client, message);
+      break;
     default:
       client.sendError(message, "Invalid action");
       break;

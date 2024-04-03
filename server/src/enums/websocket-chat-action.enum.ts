@@ -8,6 +8,8 @@ enum WebSocketChatAction {
   ROOM_MESSAGE = "ROOM_MESSAGE",
   /** New room created. */
   ROOM_CREATED = "ROOM_CREATED",
+  /** List of rooms. */
+  ROOM_LIST = "ROOM_LIST",
 }
 
 export default WebSocketChatAction;

@@ -1,3 +1,4 @@
+import { WebSocketChatAction } from "@enums";
 import { ExtWebSocket, WebSocketMessage } from "@interfaces";
 import { roomService } from "@services";
 
@@ -5,6 +6,12 @@ import { roomService } from "@services";
 
 /** Chat controller */
 
+/**
+ * Sends a message for an ad.
+ * @param client The client.
+ * @param message The websocket message.
+ * @returns The result of the operation.
+ */
 export async function sendAdMessage(
   client: ExtWebSocket,
   message: WebSocketMessage<{ adId: number; content: string }>
@@ -24,4 +31,23 @@ export async function sendAdMessage(
   }
 
   await room.sendMessage(client.userId, content);
+}
+
+/**
+ * Gets rooms.
+ * @param client The client.
+ * @param message The websocket message.
+ * @returns The result of the operation.
+ */
+export async function getRooms(
+  client: ExtWebSocket,
+  message: WebSocketMessage
+) {
+  const rooms = await roomService.getRoomsData(client.userId);
+
+  client.sendMessage({
+    type: message.type,
+    action: WebSocketChatAction.ROOM_LIST,
+    data: rooms,
+  });
 }
