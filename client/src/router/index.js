@@ -1,7 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/components/Home.vue';
 import AcademicServices from '@/components/AcademicServices.vue';
-import ForSale from '@/components/ForSale.vue';
+import Home from '@/components/Home.vue';
 import ItemsWanted from '@/components/ItemsWanted.vue';
 import LoginPage from '@/components/LoginPage.vue';
 import MyAccount from '@/components/MyAccount.vue';
