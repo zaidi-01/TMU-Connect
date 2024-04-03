@@ -51,3 +51,30 @@ export async function getRooms(
     data: rooms,
   });
 }
+
+/**
+ * Sends a message in a room.
+ * @param client The client.
+ * @param message The websocket message.
+ * @returns The result of the operation.
+ */
+export async function sendMessage(
+  client: ExtWebSocket,
+  message: WebSocketMessage<{ roomId: number; content: string }>
+) {
+  const { roomId, content } = message.data;
+
+  if (!roomId || !content) {
+    client.sendError(message, "Missing data");
+    return;
+  }
+
+  const room = await roomService.getRoomById(roomId);
+
+  if (!room) {
+    client.sendError(message, "Room not found");
+    return;
+  }
+
+  await room.sendMessage(client.userId, content);
+}
