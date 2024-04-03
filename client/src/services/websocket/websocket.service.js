@@ -30,8 +30,12 @@ ws.addEventListener("error", console.error);
 /**
  * Send a message.
  * @param {WebSocketMessage} message The message to send.
+ * @returns {Promise<void>}
  */
-export function sendMessage(message) {
+export async function sendMessage(message) {
+  while (ws.readyState !== ws.OPEN) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
   ws.send(JSON.stringify(message));
 }
 
@@ -41,18 +45,20 @@ export function sendMessage(message) {
  * @param {keyof WebSocketMessageType} type The type of message.
  * @param {string} action The action to call.
  * @param {T} data The data to send.
+ * @returns {Promise<void>}
  */
-export function sendData(type, action, data) {
-  sendMessage(new WebSocketMessage(type, action, data));
+export async function sendData(type, action, data) {
+  await sendMessage(new WebSocketMessage(type, action, data));
 }
 
 /**
  * Send an empty message.
  * @param {keyof WebSocketMessageType} type The type of message.
  * @param {string} action The action to call.
+ * @returns {Promise<void>}
  */
-export function sendAction(type, action) {
-  sendMessage(new WebSocketMessage(type, action, null));
+export async function sendAction(type, action) {
+  await sendMessage(new WebSocketMessage(type, action, null));
 }
 
 /**

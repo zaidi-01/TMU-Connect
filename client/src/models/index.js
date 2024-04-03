@@ -1,3 +1,6 @@
+import ChatMessage from "./chat-message.model";
+import Room from "./room/room.model";
 import WebSocketMessage from "./websocket-message.model";
 
-export { WebSocketMessage };
+export { ChatMessage, Room, WebSocketMessage };
+
