@@ -1,4 +1,4 @@
-import { RELATIVE_ROUTES } from "@contants";
+import { RELATIVE_ROUTES } from "@constants";
 import { authController } from "@controllers";
 import { authenticate } from "@middlewares";
 import express from "express";
@@ -9,7 +9,27 @@ const router = express.Router();
 /** Auth routes */
 
 /**
- * Register route
+ * Is authenticated route.
+ *
+ * @swagger
+ * /auth:
+ *   get:
+ *     summary: Check if user is authenticated
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User is authenticated
+ *       401:
+ *         description: Unauthorized
+ */
+router.get(
+  RELATIVE_ROUTES.AUTH.BASE,
+  authenticate(),
+  authController.isAuthenticated
+);
+
+/**
+ * Register route.
  *
  * @swagger
  * /auth/register:
@@ -31,7 +51,7 @@ const router = express.Router();
 router.post(RELATIVE_ROUTES.AUTH.REGISTER, authController.register);
 
 /**
- * Login route
+ * Login route.
  *
  * @swagger
  * /auth/login:
@@ -59,10 +79,6 @@ router.post(RELATIVE_ROUTES.AUTH.REGISTER, authController.register);
  *     responses:
  *       200:
  *         description: User logged in
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/TokenDto"
  *       400:
  *         description: Bad request
  */
@@ -72,5 +88,19 @@ router.post(
   authenticate("local"),
   authController.login
 );
+
+/**
+ * Logout route.
+ *
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User logged out
+ */
+router.post(RELATIVE_ROUTES.AUTH.LOGOUT, authController.logout);
 
 export default router;

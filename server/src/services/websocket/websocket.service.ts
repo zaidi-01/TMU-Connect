@@ -1,5 +1,5 @@
 import { webSocketController } from "@controllers";
-import { ExtWebSocket } from "@interfaces";
+import { ExtWebSocket, WebSocketMessage } from "@interfaces";
 import { IncomingMessage } from "http";
 import { Duplex } from "stream";
 import { WebSocket, WebSocketServer } from "ws";
@@ -53,6 +53,21 @@ export function handleUpgrade(
 ) {
   wss.handleUpgrade(request, socket, head, (client: WebSocket) => {
     wss.emit("connection", client, userId);
+  });
+}
+
+/**
+ * Sends a message to a user.
+ * @param userId The user ID.
+ * @param message The message.
+ */
+export function sendMessageToUser<T>(userId: number, message: WebSocketMessage<T>) {
+  wss.clients.forEach((client: WebSocket) => {
+    const extClient = client as ExtWebSocket;
+
+    if (extClient.userId === userId) {
+      extClient.sendMessage(message);
+    }
   });
 }
 

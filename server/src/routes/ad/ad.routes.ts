@@ -1,4 +1,4 @@
-import { RELATIVE_ROUTES } from "@contants";
+import { RELATIVE_ROUTES } from "@constants";
 import { adController } from "@controllers";
 import express from "express";
 
@@ -108,5 +108,33 @@ router.delete(RELATIVE_ROUTES.AD.DELETE, adController.deleteAd);
  *         description: Ad not found
  */
 router.get(RELATIVE_ROUTES.AD.DETAILS, adController.getAdDetails);
+
+/**
+ * Search ads.
+ *
+ * @swagger
+ * /ad/search:
+ *   post:
+ *     summary: Search ads
+ *     tags: [Ad]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/AdSearchDto"
+ *     responses:
+ *       200:
+ *         description: Ads found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/AdDetailsDto"
+ *       401:
+ *         description: Unauthorized
+ */
+router.post(RELATIVE_ROUTES.AD.SEARCH, adController.searchAds);
 
 export default router;

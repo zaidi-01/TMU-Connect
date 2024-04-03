@@ -10,11 +10,13 @@ const AD_ROUTES = {
   UPDATE: "/:id",
   DELETE: "/:id",
   DETAILS: "/:id",
+  SEARCH: "/search",
 };
 const AUTH_ROUTES = {
   BASE: "/",
   REGISTER: "/register",
   LOGIN: "/login",
+  LOGOUT: "/logout",
 };
 const DOCS_ROUTES = {
   BASE: "/",

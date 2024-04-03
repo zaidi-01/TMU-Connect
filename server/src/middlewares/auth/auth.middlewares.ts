@@ -14,7 +14,7 @@ const accessLevels: Record<UserRole, number> = {
  * @param strategy The strategy to use for authentication
  * @returns
  */
-export function authenticate(strategy: "jwt" | "local" = "jwt") {
+export function authenticate(strategy: "jwt" | "local" | "cookie" = "cookie") {
   return passport.authenticate(strategy, { session: false });
 }
 
