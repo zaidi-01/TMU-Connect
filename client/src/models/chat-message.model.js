@@ -12,11 +12,17 @@ class ChatMessage {
    * @param {Date} updatedAt The last update date.
    */
   constructor(id, roomId, content, userId, createdAt, updatedAt) {
+    /** The message ID. */
     this.id = id;
+    /** The room ID. */
     this.roomId = roomId;
+    /** The message content. */
     this.content = content;
+    /** The user ID. */
     this.userId = userId;
+    /** The creation date. */
     this.createdAt = createdAt;
+    /** The last update date. */
     this.updatedAt = updatedAt;
   }
 }

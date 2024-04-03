@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { WebSocketMessage } from "@/models";
 import { WebSocketMessageType } from "@/enums";
-import { Observable, Subject, filter, take } from "rxjs";
+import { Observable, Subject, filter, map, take } from "rxjs";
 /* eslint-enable no-unused-vars */
 
 const ws = new WebSocket(
   `${window.location.protocol === "https:" ? "wss" : "ws"}://${
     window.location.host
-  }/ws`
+  }/api/ws`
 );
 
 /** @type {Subject<WebSocketMessage>} */
@@ -69,7 +69,8 @@ export async function sendAction(type, action) {
  */
 export function on$(type, action) {
   return message$.pipe(
-    filter((message) => message.type === type && message.action === action)
+    filter((message) => message.type === type && message.action === action),
+    map((message) => message.data)
   );
 }
 

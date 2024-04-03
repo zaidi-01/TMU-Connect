@@ -107,7 +107,7 @@ function roomFromData(roomId, name) {
         content,
       }
     );
-  }
+  };
 
   _message$.subscribe((message) => {
     if (message.roomId === room.roomId) {

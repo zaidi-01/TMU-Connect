@@ -7,20 +7,25 @@ import { WebSocketMessageType } from "@/enums";
  */
 class WebSocketMessage {
   /**
-   * The type of message.
-   * @type {WebSocketMessageType}
+   * Initializes a new instance of the WebSocketMessage class.
    */
-  type;
-  /**
-   * The action to call.
-   * @type {string}
-   */
-  action;
-  /**
-   * The data to send.
-   * @type {T}
-   */
-  data;
+  constructor(type, action, data) {
+    /**
+     * The type of message.
+     * @type {WebSocketMessageType}
+     */
+    this.type = type;
+    /**
+     * The action to call.
+     * @type {string}
+     */
+    this.action = action;
+    /**
+     * The data to send.
+     * @type {T}
+     */
+    this.data = data;
+  }
 }
 
 export default WebSocketMessage;

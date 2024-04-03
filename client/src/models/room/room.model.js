@@ -20,7 +20,9 @@ class Room {
    * @param {string} name The room name.
    */
   constructor(roomId, name) {
+    /** The room ID. */
     this.roomId = roomId;
+    /** The room name. */
     this.name = name;
   }
 }
