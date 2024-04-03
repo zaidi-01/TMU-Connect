@@ -1,3 +1,5 @@
+import FilterOptions from "./filter-options.model";
+
 /**
  * The data transfer object for searching ads.
  *
@@ -19,15 +21,25 @@
  *           description: The number of ads to skip.
  *           type: integer
  *           example: 20
+ *         filterOptions:
+ *           $ref: "#/components/schemas/FilterOptions"
+ *           example:
+ *             query: "car"
+ *             minPrice: 100`
+ *             maxPrice: 1000
+ *             types:
+ *               - "SALE"
+ *               - "WANTED"
+ *         sortOptions:
+ *           $ref: "#/components/schemas/SortOptions"
+ *           example:
+ *             field: "PRICE"
+ *             order: "ASC"
  *       required:
  *         - take
  *         - skip
  */
 interface AdSearchDto {
-  /**
-   * The search query.
-   */
-  query: string;
   /**
    * The number of ads to take.
    */
@@ -36,6 +48,14 @@ interface AdSearchDto {
    * The number of ads to skip.
    */
   skip: number;
+  /**
+   * The filter options.
+   */
+  filterOptions?: FilterOptions;
+  /**
+   * The sort options.
+   */
+  sortOptions?: SortOptions;
 }
 
 export default AdSearchDto;

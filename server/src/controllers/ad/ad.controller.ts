@@ -119,13 +119,76 @@ export const getAdDetails = asyncHandler(
  * @param res Response.
  */
 export const searchAds = asyncHandler(async (req: Request, res: Response) => {
-  const { query, take, skip } = req.body as AdSearchDto;
+  const { take, skip, filterOptions, sortOptions } = req.body as AdSearchDto;
+  const { query, minPrice, maxPrice, types } = filterOptions || {};
+  const { field, order } = sortOptions || {
+    field: "DATE",
+    order: "DESC",
+  };
+
+  let sortBy = "";
+  let orderBy = "";
+
+  switch (field) {
+    case "DATE":
+      sortBy = "updatedAt";
+      break;
+    case "PRICE":
+      sortBy = "price";
+      break;
+    case "TITLE":
+      sortBy = "title";
+      break;
+    default:
+      sortBy = "updatedAt";
+  }
+
+  switch (order) {
+    case "ASC":
+      orderBy = "asc";
+      break;
+    case "DESC":
+      orderBy = "desc";
+      break;
+    default:
+      orderBy = "desc";
+  }
 
   const ads = (await prisma.ad.findMany({
     where: {
-      title: {
-        contains: query,
-      },
+      AND: [
+        query
+          ? {
+              title: {
+                contains: query,
+              },
+            }
+          : {},
+        types && types.length > 0
+          ? {
+              type: {
+                in: types,
+              },
+            }
+          : {},
+        maxPrice
+          ? {
+              price: {
+                lte: maxPrice,
+              },
+            }
+          : {},
+        minPrice
+          ? {
+              price: {
+                gte: minPrice,
+              },
+            }
+          : {},
+      ],
+    },
+    orderBy: {
+      [sortBy]: orderBy,
     },
     take: take,
     skip: skip,
