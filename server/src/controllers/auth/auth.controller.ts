@@ -11,6 +11,27 @@ const prisma = new PrismaClient();
 
 /** Auth controller */
 
+/**
+ * Check if the user is authenticated.
+ *
+ * @param req Request.
+ * @param res Response.
+ */
+export const isAuthenticated = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    res.status(401).end();
+    return;
+  }
+
+  res.status(200).end();
+});
+
+/**
+ * Register a new user.
+ *
+ * @param req Request.
+ * @param res Response.
+ */
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body as RegisterDto;
   const hashedPassword = await Password.hashPassword(password);
@@ -25,9 +46,15 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     } as User,
   });
 
-  res.status(201);
+  res.status(201).end();
 });
 
+/**
+ * Login a user.
+ *
+ * @param req Request.
+ * @param res Response.
+ */
 export const login = asyncHandler(async (req, res) => {
   if (!req.user) {
     res.status(400);
@@ -53,4 +80,14 @@ export const login = asyncHandler(async (req, res) => {
       })
       .sendStatus(200);
   });
+});
+
+/**
+ * Logout a user.
+ *
+ * @param req Request.
+ * @param res Response.
+ */
+export const logout = asyncHandler(async (_, res) => {
+  res.clearCookie(COOKIE_NAME).sendStatus(200);
 });

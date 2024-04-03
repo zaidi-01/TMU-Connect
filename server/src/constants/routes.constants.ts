@@ -15,6 +15,7 @@ const AUTH_ROUTES = {
   BASE: "/",
   REGISTER: "/register",
   LOGIN: "/login",
+  LOGOUT: "/logout",
 };
 const DOCS_ROUTES = {
   BASE: "/",
