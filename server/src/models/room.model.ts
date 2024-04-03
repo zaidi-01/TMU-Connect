@@ -1,4 +1,6 @@
+import { MessageType, WebSocketChatAction } from "@enums";
 import { PrismaClient } from "@prisma/client";
+import { websocketService } from "@services";
 
 // TODO: Create DTO models for the database models
 
@@ -65,19 +67,27 @@ class Room {
   /**
    * Sends a message in the room.
    * @param participant The participant.
-   * @param message The message.
+   * @param content The message.
    */
-  public async sendMessage(participant: number, message: string) {
+  public async sendMessage(participant: number, content: string) {
     if (!this.participants.includes(participant)) {
       throw new Error("Participant not found");
     }
 
-    await Room.prisma.message.create({
+    const message = await Room.prisma.message.create({
       data: {
         roomId: this.id,
         userId: participant,
-        content: message,
+        content: content,
       },
+    });
+
+    this.participants.forEach((p) => {
+      websocketService.sendMessageToUser(p, {
+        type: MessageType.CHAT,
+        action: WebSocketChatAction.ROOM_MESSAGE,
+        data: message,
+      });
     });
   }
 }

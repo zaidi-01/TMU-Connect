@@ -1,6 +1,6 @@
-import { ExtWebSocket, WebSocketMessage } from "@interfaces";
-import { MessageAction } from "../enums";
 import { chatController } from "@controllers";
+import { WebSocketChatAction as Action } from "@enums";
+import { ExtWebSocket, WebSocketMessage } from "@interfaces";
 
 /**
  * Handles chat websocket messages.
@@ -12,7 +12,7 @@ export async function handleMessage(
   message: WebSocketMessage
 ) {
   switch (message.action) {
-    case MessageAction.SEND_AD_MESSAGE:
+    case Action.SEND_AD_MESSAGE:
       await chatController.sendAdMessage(client, message);
       break;
     default:

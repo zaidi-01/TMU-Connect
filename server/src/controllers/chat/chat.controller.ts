@@ -7,9 +7,9 @@ import { roomService } from "@services";
 
 export async function sendAdMessage(
   client: ExtWebSocket,
-  message: WebSocketMessage
+  message: WebSocketMessage<{ adId: number; content: string }>
 ) {
-  const { adId, content } = message.data as { adId: number; content: string };
+  const { adId, content } = message.data;
 
   if (!adId || !content) {
     client.sendError(message, "Missing data");

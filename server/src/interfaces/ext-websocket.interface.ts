@@ -14,7 +14,7 @@ interface ExtWebSocket extends WebSocket {
    * @param message The message to send
    * @param cb Callback
    */
-  sendMessage(message: WebSocketMessage, cb?: (err?: Error) => void): void;
+  sendMessage<T>(message: WebSocketMessage<T>, cb?: (err?: Error) => void): void;
   /**
    * Sends an error message
    * @param message The message that caused the error
