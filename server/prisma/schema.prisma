@@ -29,12 +29,14 @@ enum AdType {
 // Model definitions
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  name     String
-  password String
-  role     UserRole @default(USER)
-  Ad       Ad[]
+  id              Int               @id @default(autoincrement())
+  email           String            @unique
+  name            String
+  password        String
+  role            UserRole          @default(USER)
+  Ad              Ad[]
+  Message         Message[]
+  RoomParticipant RoomParticipant[]
 }
 
 model Ad {
@@ -47,4 +49,36 @@ model Ad {
   updatedAt   DateTime @updatedAt
   userId      Int
   User        User     @relation(fields: [userId], references: [id])
+  Room        Room[]
+}
+
+model Room {
+  id              Int               @id @default(autoincrement())
+  name            String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  adId            Int
+  ad              Ad                @relation(fields: [adId], references: [id])
+  Message         Message[]
+  RoomParticipant RoomParticipant[]
+}
+
+model RoomParticipant {
+  userId Int
+  User   User @relation(fields: [userId], references: [id])
+  roomId Int
+  Room   Room @relation(fields: [roomId], references: [id])
+
+  @@id([userId, roomId])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  roomId    Int
+  Room      Room     @relation(fields: [roomId], references: [id])
 }
