@@ -1,3 +1,3 @@
-import RegisterDto from "./RegisterDto.model";
+import RegisterDto from "./register-dto.model";
 
 export { RegisterDto };
