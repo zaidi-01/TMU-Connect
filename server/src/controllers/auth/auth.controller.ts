@@ -1,9 +1,10 @@
+import { COOKIE_NAME } from "@contants";
 import { PrismaClient, User } from "@prisma/client";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
 import jwt from "jsonwebtoken";
-import { RegisterDto, TokenDto } from "./models";
+import { RegisterDto } from "./models";
 
 /** Prisma client */
 const prisma = new PrismaClient();
@@ -44,6 +45,12 @@ export const login = asyncHandler(async (req, res) => {
     // TODO: Add configuration options for the token.
     // TODO: Change this secret to something more secure or add a provider for secret.
     const accessToken = jwt.sign({ id: (req.user as User).id }, "secret");
-    res.json({ accessToken } as TokenDto);
+
+    res
+      .cookie(COOKIE_NAME, accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .sendStatus(200);
   });
 });

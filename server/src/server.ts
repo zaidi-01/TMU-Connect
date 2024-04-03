@@ -1,13 +1,14 @@
-import { ROUTES } from "@contants";
+import { COOKIE_NAME, ROUTES } from "@contants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
 import { websocketService } from "@services";
 import { Password } from "@utilities";
+import cookieParser from "cookie-parser";
 import express from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
-import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
+import { Strategy as CookieStrategy } from "passport-cookie";
 import { Strategy as LocalStrategy } from "passport-local";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi, { SwaggerUiOptions } from "swagger-ui-express";
@@ -54,13 +55,45 @@ passport.use(
 );
 
 // JWT strategy
-const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  // TODO: Change this secret to something more secure or add a provider for secret.
-  secretOrKey: "secret",
+// TODO: Remove if not needed in the future.
+// TODO: Remove TokenDto along with this strategy.
+// const jwtOptions = {
+//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+//   // TODO: Change this secret to something more secure or add a provider for secret.
+//   secretOrKey: "secret",
+// };
+// passport.use(
+//   new JwtStrategy(jwtOptions, (jwtPayload, done) => {
+//     prisma.user
+//       .findUnique({
+//         where: {
+//           id: jwtPayload.id,
+//         },
+//       })
+//       .then((user) => {
+//         if (user) {
+//           return done(null, user);
+//         }
+
+//         return done(null, false);
+//       })
+//       .catch((error) => {
+//         return done(error, false);
+//       });
+//   })
+// );
+
+// Cookie strategy
+const cookieOptions = {
+  cookieName: COOKIE_NAME,
+  signed: process.env.NODE_ENV === "production",
+  passReqToCallback: false,
 };
 passport.use(
-  new JwtStrategy(jwtOptions, (jwtPayload, done) => {
+  new CookieStrategy(cookieOptions, (token: string, done: any) => {
+    // TODO: Change this secret to something more secure or add a provider for secret.
+    const jwtPayload = jwt.verify(token, "secret") as JwtPayload;
+
     prisma.user
       .findUnique({
         where: {
@@ -134,6 +167,7 @@ const swaggerOptions = {
 const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 
 /** Middlewares */
+app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 app.use(
@@ -160,7 +194,7 @@ http.on("upgrade", (request, socket, head) => {
 
   // TODO: Refactor this to use the authenticate middleware once token is stored in a cookie.
   try {
-    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+    const token = request.headers.cookie?.split("=")[1].split(";")[0];
     if (!token) {
       socket.destroy();
       return;
