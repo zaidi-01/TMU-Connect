@@ -1,9 +1,11 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import { UserDto, UserUpdateDto } from "./models";
 
 // TODO: Use HTTP service once it's implemented.
-axios.defaults.baseURL = "/api/user";
+const http = axios.create({
+  baseURL: "/api/user",
+});
 
 /**
  * The user.
@@ -20,7 +22,7 @@ export const getCurrentUser = async () => {
     return user;
   }
 
-  const response = await axios.get("/");
+  const response = await http.get("/");
   user = new Promise((resolve) => resolve(response.data));
 
   return user;
@@ -32,7 +34,7 @@ export const getCurrentUser = async () => {
  * @returns {Promise<UserDto>} The updated user.
  */
 export const updateCurrentUser = async (user) => {
-  const response = await axios.put("/", user);
+  const response = await http.put("/", user);
   user = new Promise((resolve) => resolve(response.data));
 
   return response.data;
