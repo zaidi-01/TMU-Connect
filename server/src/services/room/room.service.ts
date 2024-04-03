@@ -1,5 +1,7 @@
+import { MessageType, WebSocketChatAction } from "@enums";
 import { Room } from "@models";
 import { PrismaClient } from "@prisma/client";
+import { websocketService } from "@services";
 
 /** Prisma client. */
 
@@ -31,6 +33,19 @@ export async function createRoom(
     select: {
       id: true,
     },
+  });
+
+  participants.forEach((participant) => {
+    websocketService.sendMessageToUser(participant, {
+      type: MessageType.CHAT,
+      action: WebSocketChatAction.ROOM_CREATED,
+      data: {
+        id: roomData.id,
+        name,
+        adId,
+        participants,
+      },
+    });
   });
 
   return new Room(roomData.id, name, adId, participants);
