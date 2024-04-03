@@ -88,35 +88,41 @@
             },
             handleSubmit()
             {
-                const newPost =
+                const newAd =
                 { 
+                    type: this.type,
                     title: this.title,
                     description: this.description,
-                    type: this.type
+                    price: this.price
                 };
     
-                const formData = new formData();
-                formData.append('image', this.image);
-                formData.append('post', JSON.stringify(newPost));
-    
-                fetch('./api/ad/',
+                fetch('http://localhost:8080/api/ad',
                 {
                     method: 'POST',
-                    body: formData
+                    headers:
+                    {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newAd)
                 })
                 .then(response => response.json())
                 .then(data =>
                 {
                     window.alert('Your post has been submitted successfully!');
-                    this.$emit('postAdded', data);
+                    console.log('Response', data);
+
+                    this.type = 'SALE'; // Reset after submission
                     this.title = '';
                     this.description = '';
-                    this.type = 'Items for Sale'; // Reset after submission
+                    this.price = null;
                 })
-                .catch(error => console.error('Error adding post:', error));
+                .catch(error => {
+                    console.error('Error adding post:', error);
+                    window.alert('Failed to submit post. Please try again');
+                });
             }
         }   
-    }
+    };
     </script>
     
     <style scoped>
