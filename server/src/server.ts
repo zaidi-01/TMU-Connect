@@ -2,7 +2,7 @@ import { COOKIE_NAME, ROUTES } from "@constants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
-import { websocketService } from "@services";
+import { webSocketService } from "@services";
 import { Password } from "@utilities";
 import cookieParser from "cookie-parser";
 import express from "express";
@@ -214,7 +214,7 @@ http.on("upgrade", (request, socket, head) => {
           return;
         }
 
-        websocketService.handleUpgrade(request, socket, head, user.id);
+        webSocketService.handleUpgrade(request, socket, head, user.id);
       });
   } catch (error) {
     socket.destroy();

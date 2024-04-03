@@ -1,6 +1,6 @@
 import { MessageType, WebSocketChatAction } from "@enums";
 import { PrismaClient } from "@prisma/client";
-import { websocketService } from "@services";
+import { webSocketService } from "@services";
 
 // TODO: Create DTO models for the database models
 
@@ -83,7 +83,7 @@ class Room {
     });
 
     this.participants.forEach((p) => {
-      websocketService.sendMessageToUser(p, {
+      webSocketService.sendMessageToUser(p, {
         type: MessageType.CHAT,
         action: WebSocketChatAction.ROOM_MESSAGE,
         data: message,

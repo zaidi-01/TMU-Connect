@@ -1,7 +1,7 @@
 import { MessageType, WebSocketChatAction } from "@enums";
 import { Room } from "@models";
 import { PrismaClient } from "@prisma/client";
-import { websocketService } from "@services";
+import * as webSocketService from "../websocket/websocket.service";
 
 // TODO: Add room cache for better performance
 
@@ -38,7 +38,7 @@ export async function createRoom(
   });
 
   participants.forEach((participant) => {
-    websocketService.sendMessageToUser(participant, {
+    webSocketService.sendMessageToUser(participant, {
       type: MessageType.CHAT,
       action: WebSocketChatAction.ROOM_CREATED,
       data: {
