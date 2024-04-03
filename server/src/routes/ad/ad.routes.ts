@@ -1,4 +1,4 @@
-import { RELATIVE_ROUTES } from "@contants";
+import { RELATIVE_ROUTES } from "@constants";
 import { adController } from "@controllers";
 import express from "express";
 

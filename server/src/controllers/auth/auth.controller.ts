@@ -1,4 +1,4 @@
-import { COOKIE_NAME } from "@contants";
+import { COOKIE_NAME } from "@constants";
 import { PrismaClient, User } from "@prisma/client";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
