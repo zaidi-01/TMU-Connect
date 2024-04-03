@@ -7,7 +7,7 @@ type MessageHandlers = {
   [key in MessageType]: (
     client: ExtWebSocket,
     message: WebSocketMessage
-  ) => void;
+  ) => Promise<void>;
 };
 
 const messageHandlers: MessageHandlers = {
@@ -19,7 +19,7 @@ const messageHandlers: MessageHandlers = {
  * @param client The client.
  * @param message The message.
  */
-export function handleMessage(client: ExtWebSocket, data: string) {
+export async function handleMessage(client: ExtWebSocket, data: string) {
   try {
     const message: WebSocketMessage = JSON.parse(data);
     const handler = messageHandlers[message.type];
@@ -29,7 +29,7 @@ export function handleMessage(client: ExtWebSocket, data: string) {
       return;
     }
 
-    handler(client, message);
+    await handler(client, message);
   } catch (error) {
     console.error(error);
     return;

@@ -37,6 +37,59 @@ export async function createRoom(
 }
 
 /**
+ * Gets or creates a room by ad ID.
+ * @param adId The ad ID.
+ * @param currentUserId The current user ID.
+ * @returns The room.
+ */
+export async function getOrCreateRoomByAdId(
+  adId: number,
+  currentUserId: number
+) {
+  const roomData = await prisma.room.findFirst({
+    where: {
+      adId,
+      RoomParticipant: {
+        some: {
+          userId: currentUserId,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      adId: true,
+      RoomParticipant: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+
+  if (roomData) {
+    return new Room(
+      roomData.id,
+      roomData.name,
+      roomData.adId,
+      roomData.RoomParticipant.map((p) => p.userId)
+    );
+  }
+
+  const adData = await prisma.ad.findUnique({
+    where: {
+      id: adId,
+    },
+  });
+
+  if (!adData) {
+    return null;
+  }
+
+  return createRoom(adData.title, adId, [currentUserId, adData.userId]);
+}
+
+/**
  * Gets a room by ID.
  * @param roomId The room ID.
  */
