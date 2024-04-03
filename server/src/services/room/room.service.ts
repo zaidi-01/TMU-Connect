@@ -3,6 +3,8 @@ import { Room } from "@models";
 import { PrismaClient } from "@prisma/client";
 import { websocketService } from "@services";
 
+// TODO: Add room cache for better performance
+
 /** Prisma client. */
 
 const prisma = new PrismaClient();
