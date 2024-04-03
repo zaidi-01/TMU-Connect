@@ -3,7 +3,7 @@
         <Header />
     
         <div class="post-container">
-            <h2>Add a New Post</h2>
+            <h2>Post a New Ad</h2>
             <form class="post-form" @sumbit.prevent="handleSubmit">
             <div type="type">
                 <label>Post Type:</label>
@@ -59,6 +59,7 @@
             [
             { id: 1, text: 'ITEMS FOR SALE', route: '/' },
             {id: 2, text: 'MAKE NEW POST', route: '/new-post'},
+            {id: 3, text: 'MY MESSAGES ', route: ''}
             ],
             showDropdown: false,
     
