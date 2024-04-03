@@ -1,22 +1,28 @@
+import { MessageType } from "@enums";
 import { ExtWebSocket, WebSocketMessage } from "@interfaces";
+import { chatHandler } from "./handlers";
 
-/** Message handlers */
+/** Message handlers. */
 type MessageHandlers = {
-  [key: string]: (client: ExtWebSocket, message: WebSocketMessage) => void;
+  [key in MessageType]: (
+    client: ExtWebSocket,
+    message: WebSocketMessage
+  ) => void;
 };
 
-// TODO: Add message handlers
-const messageHandlers: MessageHandlers = {};
+const messageHandlers: MessageHandlers = {
+  [MessageType.CHAT]: chatHandler.handleMessage,
+};
 
 /**
- * Handles incoming message
- * @param client The client
- * @param message The message
+ * Handles incoming message.
+ * @param client The client.
+ * @param message The message.
  */
 export function handleMessage(client: ExtWebSocket, data: string) {
   try {
     const message: WebSocketMessage = JSON.parse(data);
-    const handler = messageHandlers[message.action];
+    const handler = messageHandlers[message.type];
 
     if (!handler) {
       client.sendError(message, "Invalid type");
