@@ -75,9 +75,10 @@ export async function sendAction(type, action) {
 
 /**
  * Emits messages of a specific type and action.
+ * @template T
  * @param {keyof WebSocketMessageType} type The type of message.
  * @param {string} action The action to listen for.
- * @returns {Observable<WebSocketMessage>}
+ * @returns {Observable<T>}
  */
 export function on$(type, action) {
   return message$.pipe(

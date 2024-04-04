@@ -1,7 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { WebSocketMessageType } from "@/enums";
 import { ChatMessage, Room, User } from "@/models";
-import { BehaviorSubject, Observable, Subject, combineLatest } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  filter,
+  map,
+  take,
+} from "rxjs";
 import * as userService from "../user/user.service";
 import * as webSocketService from "../websocket/websocket.service";
 import { WebSocketChatAction } from "./enums";
@@ -122,29 +130,32 @@ function roomFromData(roomId, name) {
     }
   });
   combineLatest([
-    webSocketService.once$(
-      WebSocketMessageType.CHAT,
-      WebSocketChatAction.ROOM_MESSAGE_LIST
-    ),
+    webSocketService
+      .on$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_MESSAGE_LIST)
+      .pipe(
+        filter((messagesData) => messagesData.roomId === room.roomId),
+        take(1),
+        map((messagesData) => messagesData.messages)
+      ),
     userService.getCurrentUser(),
   ]).subscribe(
     /**
      * Handle the room message list.
-     * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }[]} messagesData The message list data.
+     * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }[]} messages The message list data.
      * @param {User} currentUser The current user.
      */
-    ([messagesData, currentUser]) => {
+    ([messages, currentUser]) => {
       messages$.next(
-        messagesData.map(
-          (messageData) =>
+        messages.map(
+          (message) =>
             new ChatMessage(
-              messageData.id,
-              messageData.roomId,
-              messageData.content,
-              messageData.userId,
-              messageData.createdAt,
-              messageData.updatedAt,
-              messageData.userId === currentUser.id
+              message.id,
+              message.roomId,
+              message.content,
+              message.userId,
+              message.createdAt,
+              message.updatedAt,
+              message.userId === currentUser.id
             )
         )
       );
