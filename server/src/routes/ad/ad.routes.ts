@@ -10,7 +10,7 @@ const router = express.Router();
 // TODO: Add error responses for all routes.
 
 /**
- * Create an ad
+ * Create an ad.
  *
  * @swagger
  * /ad:
@@ -34,7 +34,7 @@ const router = express.Router();
 router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
 
 /**
- * Update an ad
+ * Update an ad.
  *
  * @swagger
  * /ad/{id}:
@@ -64,7 +64,7 @@ router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
 router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
 
 /**
- * Delete an ad
+ * Delete an ad.
  *
  * @swagger
  * /ad/{id}:
@@ -84,7 +84,7 @@ router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
 router.delete(RELATIVE_ROUTES.AD.DELETE, adController.deleteAd);
 
 /**
- * Get ad details
+ * Get ad details.
  *
  * @swagger
  * /ad/{id}:
