@@ -1,5 +1,6 @@
 import { AdDetails, AdFilterOptions, AdSortOptions } from "@/models";
 import axios, { AxiosResponse } from "axios";
+import * as authService from "../auth/auth.service";
 
 // TODO: Add DTOs
 
@@ -25,6 +26,10 @@ export async function createAd(ad) {
  * @returns {Promise<AdDetails>} Updated ad.
  */
 export async function updateAd(ad) {
+  if (!(await authService.isAdmin())) {
+    return;
+  }
+
   /** @type {AxiosResponse<AdDetails>} */
   const response = await http.put(`/${ad.id}`, ad);
   return response.data;
@@ -36,6 +41,10 @@ export async function updateAd(ad) {
  * @returns {Promise<void>} Empty promise.
  */
 export async function deleteAd(id) {
+  if (!(await authService.isAdmin())) {
+    return;
+  }
+
   await http.delete(`/${id}`);
 }
 
@@ -60,7 +69,7 @@ export async function getAdById(id) {
  */
 export async function getAds(take, skip, filterOptions, sortOptions) {
   /** @type {AxiosResponse<AdDetails[]>} */
-  const response = await http.get("/", {
+  const response = await http.get("/search", {
     params: {
       take,
       skip,
