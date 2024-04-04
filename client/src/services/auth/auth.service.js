@@ -1,10 +1,16 @@
 import axios from "axios";
+import { BehaviorSubject, distinctUntilChanged } from "rxjs";
 import { RegisterDto } from "./models";
 
 // TODO: Use HTTP service once it's implemented.
 const http = axios.create({
   baseURL: "/api/auth",
 });
+
+const _isAuthenticated$ = new BehaviorSubject(false);
+export const isAuthenticated$ = _isAuthenticated$
+  .asObservable()
+  .pipe(distinctUntilChanged());
 
 /**
  * Checks if a user is authenticated.
@@ -13,8 +19,10 @@ const http = axios.create({
 export const isAuthenticated = async () => {
   try {
     await http.get("/");
+    _isAuthenticated$.next(true);
     return true;
   } catch {
+    _isAuthenticated$.next(false);
     return false;
   }
 };

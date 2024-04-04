@@ -2,30 +2,42 @@
 import { WebSocketMessage } from "@/models";
 import { WebSocketMessageType } from "@/enums";
 import { Observable, Subject, filter, map, take } from "rxjs";
+import * as authService from "../auth/auth.service";
 /* eslint-enable no-unused-vars */
 
-const ws = new WebSocket(
-  `${window.location.protocol === "https:" ? "wss" : "ws"}://${
-    window.location.host
-  }/api/ws`
-);
+/** @type {WebSocket} */
+let ws;
+authService.isAuthenticated$
+  .pipe(
+    filter((isAuthenticated) => isAuthenticated),
+    take(1)
+  )
+  .subscribe(initializeWebSocket);
 
 /** @type {Subject<WebSocketMessage>} */
 const _message$ = new Subject();
 export const message$ = _message$.asObservable();
 
-ws.addEventListener("open", () => {
-  console.log("WebSocket connection established.");
+function initializeWebSocket() {
+  ws = new WebSocket(
+    `${window.location.protocol === "https:" ? "wss" : "ws"}://${
+      window.location.host
+    }/api/ws`
+  );
 
-  ws.addEventListener("message", (event) => {
-    /** @type {WebSocketMessage} */
-    const message = JSON.parse(event.data);
-    _message$.next(
-      new WebSocketMessage(message.type, message.action, message.data)
-    );
+  ws.addEventListener("open", () => {
+    console.log("WebSocket connection established.");
+
+    ws.addEventListener("message", (event) => {
+      /** @type {WebSocketMessage} */
+      const message = JSON.parse(event.data);
+      _message$.next(
+        new WebSocketMessage(message.type, message.action, message.data)
+      );
+    });
   });
-});
-ws.addEventListener("error", console.error);
+  ws.addEventListener("error", console.error);
+}
 
 /**
  * Send a message.
@@ -33,7 +45,7 @@ ws.addEventListener("error", console.error);
  * @returns {Promise<void>}
  */
 export async function sendMessage(message) {
-  while (ws.readyState !== ws.OPEN) {
+  while (!ws || ws.readyState !== WebSocket.OPEN) {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   ws.send(JSON.stringify(message));

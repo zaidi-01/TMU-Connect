@@ -1,7 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { WebSocketMessageType } from "@/enums";
 import { ChatMessage, Room, User } from "@/models";
-import { BehaviorSubject, Observable, Subject, withLatestFrom } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  map,
+  of,
+  withLatestFrom,
+} from "rxjs";
 import * as userService from "../user/user.service";
 import * as webSocketService from "../websocket/websocket.service";
 import { WebSocketChatAction } from "./enums";
@@ -47,7 +54,11 @@ webSocketService
   );
 webSocketService
   .on$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_MESSAGE)
-  .pipe(withLatestFrom(userService.getCurrentUser()))
+  .pipe(
+    map((messageData) =>
+      of(messageData).pipe(withLatestFrom(userService.getCurrentUser()))
+    )
+  )
   .subscribe(
     /**
      * Handle the room message.
