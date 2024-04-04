@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { AdType } from "@/enums";
 import { AdDetails, AdFilterOptions, AdSortOptions } from "@/models";
 import axios, { AxiosResponse } from "axios";
 import * as authService from "../auth/auth.service";
@@ -13,10 +14,19 @@ const http = axios.create({
 
 /**
  * Create an ad.
- * @param {AdDetails} ad Ad to create.
+ * @param {string} title Ad title.
+ * @param {string} description Ad description.
+ * @param {number} price Ad price.
+ * @param {keyof AdType } type Ad type.
  * @returns {Promise<AdDetails>} Created ad.
  */
-export async function createAd(ad) {
+export async function createAd(title, description, price, type) {
+  const ad = {
+    title,
+    description,
+    price,
+    type,
+  };
   /** @type {AxiosResponse<AdDetails>} */
   const response = await http.post("/", ad);
   return response.data;
