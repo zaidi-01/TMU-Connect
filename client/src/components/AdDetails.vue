@@ -4,10 +4,10 @@
 
         <div class="ad-details">
             <h1 class="ad-title">{{ ad.title }}</h1>
+            <p class="ad-type">{{ ad.type }}</p>
+            <div class="ad-description">{{ ad.description }}</div>
             <div class="ad-info">
-                <p>{{ ad.type }}</p>
-                <p>{{ ad.description }}</p>
-                <p class="price">${{ ad.price }}</p>
+                <h2 class="price">${{ ad.price }}</h2>
                 <p class="timestamp">Ad Posted: {{ ad.createdAt }}</p>
                 <p class="timestamp">Ad Updated: {{ ad.updatedAt }}</p>
             </div>
@@ -30,7 +30,15 @@ export default
     data()
     {
         return {
-            ad: {title: 'Item 1', type:'SALE', description: 'This is the test item', price: '300', createdAt: "2024-03-17T12:00:00Z", updatedAt: "2024-03-17T12:00:00Z"}
+            ad:
+            {
+                title: 'Used Car',
+                type:'SALE',
+                description: 'Selling my used car. This is the model, it has this many kilometers on it, no major damages',
+                price: '300',
+                createdAt: "2024-03-17T12:00:00Z",
+                updatedAt:"2024-03-17T12:00:00Z"
+            }
         };
     },
     created()
@@ -61,24 +69,37 @@ export default
 
 <style scoped>
 
-.ad-title
-{
-    font-weight: bold;
-}
-
 .ad-details
 {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: flex-start;
-    height: 70%;
+    padding: 140px;
+}
+
+.ad-title
+{
+    color: blue;
+    margin-bottom: 2px;
+}
+
+.ad-type
+{
+    margin-bottom: 10px;
+}
+
+.ad-description
+{
+    text-align: center;
     padding: 20px;
 }
 
 .ad-info
 {
-    width: 70%
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;;
 }
 
 .price
@@ -88,13 +109,30 @@ export default
 
 .timestamp
 {
-    font-size: 0.8em;
+    font-size: small;
+    margin-bottom: 2px;
+    margin-right: 20px;
 }
 
 .message-button
 {
     align-self: flex-end;
-    margin-top: 20px;
+    background-color: yellow;
+    color: rgb(0, 0, 222);
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
+
+.message-button:hover
+        {
+            background-color: rgb(0, 0, 222);
+            color: yellow;
+            font-weight: bold;
+        }
 
 </style>
