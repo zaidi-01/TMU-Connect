@@ -44,7 +44,7 @@
     <script>
     
     import Header from './Header.vue'
-    
+    import axios from 'axios';
     export default
     {
         name: 'NewPost',
@@ -88,28 +88,18 @@
             },
             handleSubmit()
             {
-                const newAd =
-                { 
+                const newAd = { 
                     type: this.type,
                     title: this.title,
                     description: this.description,
                     price: this.price
                 };
     
-                fetch('http://localhost:8080/api/ad',
-                {
-                    method: 'POST',
-                    headers:
-                    {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newAd)
-                })
-                .then(response => response.json())
-                .then(data =>
+                axios.post('/api/ad/', newAd)
+                .then(response =>
                 {
                     window.alert('Your post has been submitted successfully!');
-                    console.log('Response', data);
+                    console.log('Response', response.data);
 
                     this.type = 'SALE'; // Reset after submission
                     this.title = '';
