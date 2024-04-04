@@ -5,6 +5,7 @@ import SignupPage from '@/components/SignupPage.vue';
 import AdDetails from '@/components/AdDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { authService } from '@/services';
+import CommunicationPage from '@/components/CommunicationPage.vue';
 
 const routes = [
     {
@@ -32,11 +33,16 @@ const routes = [
     },
 
     {
+        path: '/communication',
+        name: 'Communication',
+        component: CommunicationPage,
+    },
+
+    {
         path: '/ad/{id}',
         name: 'AdDetails',
         component: AdDetails
-    }
-    
+    } 
 ];
 
 const router = createRouter({

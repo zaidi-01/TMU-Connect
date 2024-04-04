@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
-// eslint-disable-next-line no-unused-vars
 import { UserDto, UserUpdateDto } from "./models";
+import { User } from "@/models";
+import { AxiosResponse } from "axios";
+/* eslint-enable no-unused-vars */
 
 // TODO: Use HTTP service once it's implemented.
 const http = axios.create({
@@ -9,23 +12,31 @@ const http = axios.create({
 
 /**
  * The user.
- * @type {Promise<UserDto>}
+ * @type {Promise<User>}
  */
 let user = null;
 
 /**
  * Gets the current user.
- * @returns {Promise<UserDto>} The user.
+ * @returns {Promise<User>} The user.
  */
 export const getCurrentUser = async () => {
   if (user) {
     return user;
   }
 
+  /** @type {AxiosResponse<UserDto>} */
   const response = await http.get("/");
-  user = new Promise((resolve) => resolve(response.data));
+  const newUser = new User(
+    response.data.id,
+    response.data.name,
+    response.data.email,
+    response.data.role
+  );
 
-  return user;
+  user = new Promise((resolve) => resolve(newUser));
+
+  return newUser;
 };
 
 /**
@@ -34,8 +45,16 @@ export const getCurrentUser = async () => {
  * @returns {Promise<UserDto>} The updated user.
  */
 export const updateCurrentUser = async (user) => {
+  /** @type {AxiosResponse<UserDto>} */
   const response = await http.put("/", user);
-  user = new Promise((resolve) => resolve(response.data));
+  const newUser = new User(
+    response.data.id,
+    response.data.name,
+    response.data.email,
+    response.data.role
+  );
 
-  return response.data;
+  user = new Promise((resolve) => resolve(newUser));
+
+  return newUser;
 };

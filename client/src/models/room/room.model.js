@@ -9,8 +9,8 @@ import ChatMessage from "../chat-message.model";
  * Represents a room.
  */
 class Room {
-  /** @type {Observable<ChatMessage>} */
-  message$;
+  /** @type {Observable<ChatMessage[]>} */
+  messages$;
   /** @type {(content: string) => Promise<void>} */
   sendMessage;
 

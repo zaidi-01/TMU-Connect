@@ -10,8 +10,9 @@ class ChatMessage {
    * @param {userId} userId The user ID.
    * @param {Date} createdAt The creation date.
    * @param {Date} updatedAt The last update date.
+   * @param {boolean} isLocal Whether the message is sent by the current user.
    */
-  constructor(id, roomId, content, userId, createdAt, updatedAt) {
+  constructor(id, roomId, content, userId, createdAt, updatedAt, isLocal) {
     /** The message ID. */
     this.id = id;
     /** The room ID. */
@@ -24,6 +25,8 @@ class ChatMessage {
     this.createdAt = createdAt;
     /** The last update date. */
     this.updatedAt = updatedAt;
+    /** Whether the message is sent by the current user. */
+    this.isLocal = isLocal;
   }
 }
 

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { WebSocketMessageType } from "@/enums";
-import { ChatMessage, Room } from "@/models";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { ChatMessage, Room, User } from "@/models";
+import { BehaviorSubject, Observable, Subject, withLatestFrom } from "rxjs";
+import * as userService from "../user/user.service";
 import * as webSocketService from "../websocket/websocket.service";
 import { WebSocketChatAction } from "./enums";
 /* eslint-enable no-unused-vars */
@@ -46,12 +47,13 @@ webSocketService
   );
 webSocketService
   .on$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_MESSAGE)
+  .pipe(withLatestFrom(userService.getCurrentUser()))
   .subscribe(
     /**
      * Handle the room message.
-     * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }} messageData The message data.
+     * @param {[{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }, User]}
      */
-    (messageData) => {
+    ([messageData, currentUser]) => {
       _message$.next(
         new ChatMessage(
           messageData.id,
@@ -59,7 +61,8 @@ webSocketService
           messageData.content,
           messageData.userId,
           messageData.createdAt,
-          messageData.updatedAt
+          messageData.updatedAt,
+          messageData.userId === currentUser.id
         )
       );
     }
@@ -97,7 +100,7 @@ function roomFromData(roomId, name) {
   const messages$ = new BehaviorSubject([]);
 
   const room = new Room(roomId, name);
-  room.message$ = messages$.asObservable();
+  room.messages$ = messages$.asObservable();
   room.sendMessage = async (content) => {
     await webSocketService.sendAction(
       WebSocketMessageType.CHAT,
@@ -116,7 +119,7 @@ function roomFromData(roomId, name) {
   });
   webSocketService
     .once$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_MESSAGE_LIST)
-    .subscribe(
+    .pipe.subscribe(
       /**
        * Handle the room message list.
        * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }[]} messagesData The message list data.
