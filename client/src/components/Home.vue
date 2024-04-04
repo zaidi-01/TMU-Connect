@@ -3,7 +3,7 @@
   <Header />
 
   <div class="item-list">
-    <div class="item" v-for="item in items" :key="item.id">
+    <div class="item" v-for="item in items" :key="item.id" @click="viewAdDetails(item.id)">
       <h3>{{ item.title }}</h3>
       <p>{{ item.type }}</p>
       <p class="description">{{ item.description }}</p>
@@ -37,7 +37,7 @@ export default
       searchQuery: '',
 
       items:
-      []
+      [{id: 1, type:'SALE', title: 'Item 1', description: 'This is the test item', price: '300'}]
 
     };
   },
@@ -62,6 +62,11 @@ export default
       .catch(error => {
         console.error('Error fetching items', error);
       });
+    },
+
+    viewAdDetails(adID)
+    {
+      this.$router.push({ name:'AdDetails', params: { id: adID } });
     }
   }
 };
@@ -83,6 +88,7 @@ export default
     padding: 12px;
     border: 1px solid black;
     text-align: center;
+    cursor: pointer;
   }
 
   .item img
