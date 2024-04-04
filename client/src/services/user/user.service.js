@@ -3,6 +3,7 @@ import { User } from "@/models";
 import axios, { AxiosResponse } from "axios";
 import * as authService from "../auth/auth.service";
 import { UserDto } from "./models";
+import { UserRole } from "@/enums";
 /* eslint-enable no-unused-vars */
 
 // TODO: Use HTTP service once it's implemented.
@@ -89,9 +90,23 @@ export async function getUsers(take, skip) {
  * @returns {Promise<void>} Empty promise.
  */
 export async function deleteUser(id) {
-  if (!(await authService.isAdmin())) {
+  if (!(await authService.isAdmin()) || (await getCurrentUser()).id === id) {
     return;
   }
 
   await http.delete(`/${id}`);
+}
+
+/**
+ * Update user role.
+ * @param {number} id User ID.
+ * @param {keyof UserRole} role User role.
+ * @returns {Promise<void>} Empty promise.
+ */
+export async function updateUserRole(id, role) {
+  if (!(await authService.isAdmin()) || (await getCurrentUser()).id === id) {
+    return;
+  }
+
+  await http.put(`/${id}/role`, { role });
 }

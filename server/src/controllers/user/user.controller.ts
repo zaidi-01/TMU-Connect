@@ -101,6 +101,47 @@ export const searchUsers = asyncHandler(async (req: Request, res: Response) => {
     take: parseInt(take as string),
     skip: parseInt(skip as string),
   });
+  const usersDto = users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role as UserRole,
+  }));
 
-  res.status(200).json(users);
+  res.status(200).json(usersDto);
 });
+
+/**
+ * Update user role.
+ * @param req Request.
+ * @param res Response.
+ */
+export const updateUserRole = asyncHandler(
+  async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const { role } = req.body as { role: UserRole };
+
+    if (role !== UserRole.ADMIN && role !== UserRole.USER) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: { role },
+    });
+    const userDto: UserDto = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role as UserRole,
+    };
+
+    if (!user) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.status(200).json(userDto);
+  }
+);

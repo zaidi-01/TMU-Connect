@@ -61,7 +61,9 @@ router.put(RELATIVE_ROUTES.USER.BASE, userController.updateCurrentUserInfo);
  *       - in: path
  *         name: id
  *         required: true
+ *         description: User id.
  *         schema:
+ *           example: 1
  *           type: string
  *     responses:
  *       200:
@@ -90,12 +92,16 @@ router.delete(
  *       - in: query
  *         name: take
  *         required: true
+ *         description: Number of users to take.
  *         schema:
+ *           example: 10
  *           type: integer
  *       - in: query
  *         name: skip
  *         required: true
+ *         description: Number of users to skip.
  *         schema:
+ *           example: 0
  *           type: integer
  *     responses:
  *       200:
@@ -115,6 +121,50 @@ router.get(
   RELATIVE_ROUTES.USER.SEARCH,
   allow(UserRole.ADMIN),
   userController.searchUsers
+);
+
+/**
+ * Update user role route.
+ *
+ * @swagger
+ * /user/{id}/role:
+ *   put:
+ *     summary: Update user role.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: User id.
+ *         schema:
+ *           example: 1
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role:
+ *                 $ref: "#/components/schemas/UserRole"
+ *     responses:
+ *       200:
+ *         description: User role updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/UserDto"
+ *       401:
+ *         description: Unauthorized.
+ *       403:
+ *         description: Forbidden.
+ *       404:
+ *         description: User not found.
+ */
+router.put(
+  RELATIVE_ROUTES.USER.UPDATE_ROLE,
+  allow(UserRole.ADMIN),
+  userController.updateUserRole
 );
 
 export default router;

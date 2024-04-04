@@ -8,7 +8,9 @@
         <li @click="switchTab('users')">Manage Users</li>
       </ul>
     </nav>
-    <div class="feedback-message" v-if="feedbackMessage">{{ feedbackMessage }}</div>
+    <div class="feedback-message" v-if="feedbackMessage">
+      {{ feedbackMessage }}
+    </div>
     <section v-if="currentTab === 'users'">
       <h2>Users Management</h2>
       <span v-if="!users">Loading...</span>
@@ -19,7 +21,7 @@
               <th class="id">ID</th>
               <th class="name">Name</th>
               <th class="email">Email</th>
-              <th class="">Actions</th>
+              <th class="actions">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -27,8 +29,19 @@
               <td>{{ user.id }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
-              <td>
-                <button v-bind:disabled="user.id === userId" @click="deleteUser(user.id)">Delete</button>
+              <td class="actions">
+                <button
+                  v-bind:disabled="user.id === userId"
+                  @click="deleteUser(user.id)"
+                >
+                  Delete
+                </button>
+                <button
+                  v-bind:disabled="user.id === userId"
+                  @click="changeRole(user.id)"
+                >
+                  {{ user.role === adminRole ? "Revoke Admin" : "Make Admin" }}
+                </button>
               </td>
             </tr>
           </tbody>
@@ -53,7 +66,7 @@
             <tr v-for="ad in ads" :key="ad.id">
               <td>{{ ad.id }}</td>
               <td>{{ ad.title }}</td>
-              <td>
+              <td class="actions">
                 <button @click="deleteAd(ad.id)">Delete</button>
               </td>
             </tr>
@@ -65,12 +78,12 @@
   </div>
 </template>
 
-
 <script>
 /* eslint-disable no-unused-vars */
-import { AdDetails, User } from '@/models';
-import { adService, userService } from '@/services';
-import Header from './Header.vue';
+import { UserRole } from "@/enums";
+import { AdDetails, User } from "@/models";
+import { adService, userService } from "@/services";
+import Header from "./Header.vue";
 /* eslint-enable no-unused-vars */
 
 /**
@@ -80,10 +93,9 @@ import Header from './Header.vue';
 const ITEMS_PER_PAGE = 20;
 
 export default {
-  name: 'ItemsWanted',
-  components:
-  {
-    Header
+  name: "ItemsWanted",
+  components: {
+    Header,
   },
   data() {
     return {
@@ -111,7 +123,7 @@ export default {
        * The feedback message to display.
        * @type {string}
        */
-      feedbackMessage: '',
+      feedbackMessage: "",
       /**
        * Whether all ads have been loaded.
        * @type {boolean}
@@ -122,6 +134,11 @@ export default {
        * @type {boolean}
        */
       allUsersLoaded: false,
+      /**
+       * Admin role.
+       * @type {keyof UserRole}
+       */
+      adminRole: UserRole.ADMIN,
     };
   },
   methods: {
@@ -129,24 +146,25 @@ export default {
      * Loads the ads.
      */
     loadAds() {
-      adService.getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0)
+      adService
+        .getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0)
         .then((ads) => {
           this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
-          this.ads ? this.ads.push(...ads) : this.ads = ads;
-        }
-        )
-        .catch(error => console.error("Error fetching ads", error));
+          this.ads ? this.ads.push(...ads) : (this.ads = ads);
+        })
+        .catch((error) => console.error("Error fetching ads", error));
     },
     /**
      * Loads the users.
      */
     loadUsers() {
-      userService.getUsers(ITEMS_PER_PAGE, this.users ? this.users.length : 0)
+      userService
+        .getUsers(ITEMS_PER_PAGE, this.users ? this.users.length : 0)
         .then((users) => {
           this.allUsersLoaded = users.length < ITEMS_PER_PAGE;
-          this.users ? this.users.push(...users) : this.users = users;
+          this.users ? this.users.push(...users) : (this.users = users);
         })
-        .catch(error => console.error("Error fetching users", error));
+        .catch((error) => console.error("Error fetching users", error));
     },
     /**
      * Deletes an ad.
@@ -157,14 +175,15 @@ export default {
         return;
       }
 
-      adService.deleteAd(adId)
+      adService
+        .deleteAd(adId)
         .then(() => {
           this.ads = this.ads.filter((ad) => ad.id !== adId);
-          this.feedbackMessage = 'Ad successfully deleted.';
+          this.feedbackMessage = "Ad successfully deleted.";
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error deleting ad:", error);
-          this.feedbackMessage = 'Failed to delete ad. Please try again later.';
+          this.feedbackMessage = "Failed to delete ad. Please try again later.";
         });
     },
     /**
@@ -176,46 +195,72 @@ export default {
         return;
       }
 
-      userService.deleteUser(userId)
+      userService
+        .deleteUser(userId)
         .then(() => {
           this.users = this.users.filter((user) => user.id !== userId);
-          this.feedbackMessage = 'User successfully deleted.';
+          this.feedbackMessage = "User successfully deleted.";
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error deleting user:", error);
-          this.feedbackMessage = 'Failed to delete user. Please try again later.';
+          this.feedbackMessage =
+            "Failed to delete user. Please try again later.";
         });
     },
     /**
-   * Switches the tab.
-   * @param {"ads" | "users"} tab The tab to switch to.
-   * @returns {Promise<void>} A promise that resolves when the tab has been switched.
-   */
-    async switchTab(tab) {
+     * Switches the tab.
+     * @param {"ads" | "users"} tab The tab to switch to.
+     * @returns {Promise<void>} A promise that resolves when the tab has been switched.
+     */
+    switchTab(tab) {
       this.currentTab = tab;
 
       switch (tab) {
-        case 'ads':
+        case "ads":
           if (!this.ads) {
             this.loadAds();
           }
           break;
-        case 'users':
+        case "users":
           if (!this.users) {
             this.loadUsers();
           }
           break;
       }
     },
+    /**
+     * Changes the role of a user.
+     * @param {number} userId The ID of the user to change the role of.
+     */
+    changeRole(userId) {
+      const user = this.users.find((user) => user.id === userId);
+
+      if (!user) {
+        return;
+      }
+
+      const newRole =
+        user.role === UserRole.ADMIN ? UserRole.USER : UserRole.ADMIN;
+
+      userService
+        .updateUserRole(userId, newRole)
+        .then(() => {
+          user.role = newRole;
+          this.feedbackMessage = `User role successfully changed to ${newRole}.`;
+        })
+        .catch((error) => {
+          console.error("Error changing user role:", error);
+          this.feedbackMessage =
+            "Failed to change user role. Please try again later.";
+        });
+    },
   },
   mounted() {
-    this.switchTab('ads');
-    userService.getCurrentUser().then((user) => this.userId = user.id);
-  }
+    this.switchTab("ads");
+    userService.getCurrentUser().then((user) => (this.userId = user.id));
+  },
 };
 </script>
-
-
 
 <style scoped>
 .admin-dashboard h1 {
@@ -257,23 +302,28 @@ table {
   margin-bottom: 10px;
 }
 
-.id {
+thead .id {
   width: 10%;
 }
 
-.title {
+thead .title {
   width: 70%;
 }
 
-.name {
+thead .name {
   width: 40%;
 }
 
-.email {
+thead .email {
   width: 40%;
 }
 
-.actions {
+thead .actions {
   width: 10%;
+}
+
+tbody .actions {
+  display: flex;
+  justify-content: space-around;
 }
 </style>
