@@ -2,6 +2,7 @@ import Home from '@/components/Home.vue';
 import LoginPage from '@/components/LoginPage.vue';
 import NewPost from '@/components/NewPost.vue';
 import SignupPage from '@/components/SignupPage.vue';
+import AdDetails from '@/components/AdDetails.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { authService } from '@/services';
 
@@ -28,7 +29,14 @@ const routes = [
         path: '/register',
         name: 'Register',
         component: SignupPage,
+    },
+
+    {
+        path: '/ad/{id}',
+        name: 'AdDetails',
+        component: AdDetails
     }
+    
 ];
 
 const router = createRouter({

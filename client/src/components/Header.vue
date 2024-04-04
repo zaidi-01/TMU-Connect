@@ -34,7 +34,9 @@
                     <button class="search-button" @click="performSearch">&#128269;</button>
                 </div>
                 
-                <button class="login-button" @click="performLogin">&#128100;</button>
+                <router-link to="/login">
+                  <button class="login-button" @click="performLogin">&#128100;</button>
+                </router-link>
             </div>
         </div>
     </div>

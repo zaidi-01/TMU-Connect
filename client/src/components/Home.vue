@@ -3,10 +3,10 @@
   <Header />
 
   <div class="item-list">
-    <div class="item" v-for="item in items" :key="item.id">
+    <div class="item" v-for="item in items" :key="item.id" @click="viewAdDetails(item.id)">
       <h3>{{ item.title }}</h3>
       <p>{{ item.type }}</p>
-      <p>{{ item.description }}</p>
+      <p class="description">{{ item.description }}</p>
       <p class="price">${{ item.price }}</p>
     </div>
   </div>
@@ -15,6 +15,7 @@
 
 <script>
 import Header from './Header.vue'
+import axios from 'axios';
 
 export default
 {
@@ -36,7 +37,7 @@ export default
       searchQuery: '',
 
       items:
-      []
+      [{id: 1, type:'SALE', title: 'Item 1', description: 'This is the test item', price: '300'}]
 
     };
   },
@@ -54,20 +55,23 @@ export default
 
     fetchItems()
     {
-      fetch('http://localhost:8080/api/ad')
-      .then(response => response.json())
-      .then(data => {
-        this.items = data;
+      axios.get('/api/ad/')
+      .then(response => {
+        this.items = response.data;
       })
       .catch(error => {
         console.error('Error fetching items', error);
       });
+    },
+
+    viewAdDetails(adID)
+    {
+      this.$router.push({ name:'AdDetails', params: { id: adID } });
     }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .item-list
   {
@@ -84,6 +88,7 @@ export default
     padding: 12px;
     border: 1px solid black;
     text-align: center;
+    cursor: pointer;
   }
 
   .item img
@@ -104,15 +109,17 @@ export default
     margin-bottom: 10px;
   }
 
+  .description
+  {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .price
   {
     font-weight: bold;
     color: rgb(0, 0, 222);
-  }
-
-  button
-  {
-    background-color: rgb(255, 255, 138);
   }
 
 </style>
