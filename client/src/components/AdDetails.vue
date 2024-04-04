@@ -79,7 +79,6 @@ export default
 
 .ad-title
 {
-    color: blue;
     margin-bottom: 2px;
 }
 
@@ -91,7 +90,8 @@ export default
 .ad-description
 {
     text-align: center;
-    padding: 20px;
+    margin-top: 50px;
+    margin-bottom: 40px;
 }
 
 .ad-info
@@ -99,7 +99,8 @@ export default
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 20px;;
+    margin-top: 20px;
+    
 }
 
 .price
@@ -111,7 +112,6 @@ export default
 {
     font-size: small;
     margin-bottom: 2px;
-    margin-right: 20px;
 }
 
 .message-button

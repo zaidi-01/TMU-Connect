@@ -37,7 +37,7 @@ export default
       searchQuery: '',
 
       items:
-      [{id: 1, type:'SALE', title: 'Item 1', description: 'This is the test item', price: '300'}]
+      [{id: 1, type:'SALE', title: 'Item 1', description: 'This is the test item to ensure', price: '300'}]
 
     };
   },
@@ -83,30 +83,23 @@ export default
 
   .item
   {
-    width: 250px;
+    width: 200px;
     margin: 20px;
-    padding: 12px;
     border: 1px solid black;
     text-align: center;
     cursor: pointer;
   }
 
-  .item img
-  {
-    max-width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-  }
-
   .item h3
   {
     font-size: 1.2em;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .item p
   {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    padding: 1px 8px;
   }
 
   .description
