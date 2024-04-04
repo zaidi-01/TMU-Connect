@@ -108,6 +108,9 @@ export async function getMessages(
   client.sendMessage({
     type: message.type,
     action: WebSocketChatAction.ROOM_MESSAGE_LIST,
-    data: messages,
+    data: {
+      roomId,
+      messages,
+    },
   });
 }

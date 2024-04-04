@@ -1,21 +1,42 @@
+import { UserRole } from "@/enums";
 import axios from "axios";
+import { BehaviorSubject, distinctUntilChanged } from "rxjs";
+import * as userService from "../user/user.service";
 import { RegisterDto } from "./models";
 
 // TODO: Use HTTP service once it's implemented.
-axios.defaults.baseURL = "/api/auth";
+const http = axios.create({
+  baseURL: "/api/auth",
+});
+
+const _isAuthenticated$ = new BehaviorSubject(false);
+export const isAuthenticated$ = _isAuthenticated$
+  .asObservable()
+  .pipe(distinctUntilChanged());
 
 /**
  * Checks if a user is authenticated.
  * @returns {Promise<boolean>} True if the user is authenticated, false otherwise.
  */
-export const isAuthenticated = async () => {
+export async function isAuthenticated() {
   try {
-    await axios.get("/");
+    await http.get("/");
+    _isAuthenticated$.next(true);
     return true;
   } catch {
+    _isAuthenticated$.next(false);
     return false;
   }
-};
+}
+
+/**
+ * Checks if a user is an admin.
+ * @returns {Promise<boolean>} True if the user is an admin, false otherwise.
+ */
+export async function isAdmin() {
+  const user = await userService.getCurrentUser();
+  return user.role === UserRole.ADMIN;
+}
 
 /**
  * Logs in a user.
@@ -23,10 +44,10 @@ export const isAuthenticated = async () => {
  * @param {string} password The user's password.
  * @returns {Promise} The response data.
  */
-export const login = async (email, password) => {
-  const response = await axios.post("/login", { email, password });
+export async function login(email, password) {
+  const response = await http.post("/login", { email, password });
   return response.data;
-};
+}
 
 /**
  * Registers a user.
@@ -35,23 +56,23 @@ export const login = async (email, password) => {
  * @param {string} password The user's password.
  * @returns {Promise} The response data.
  */
-export const register = async (name, email, password) => {
-  const response = await axios.post(
+export async function register(name, email, password) {
+  const response = await http.post(
     "/register",
     new RegisterDto(name, email, password)
   );
   return response.data;
-};
+}
 
 /**
  * Logs out a user.
  * @returns {Promise} Fulfills when the user is logged out, rejects otherwise.
  */
-export const logout = async () => {
+export async function logout() {
   return new Promise((resolve, reject) => {
-    axios
+    http
       .post("/logout")
       .then(() => resolve())
       .catch((error) => reject(error));
   });
-};
+}
