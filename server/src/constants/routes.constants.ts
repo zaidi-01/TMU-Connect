@@ -23,6 +23,8 @@ const DOCS_ROUTES = {
 };
 const USER_ROUTES = {
   BASE: "/",
+  DELETE: "/:id",
+  SEARCH: "/search",
 };
 
 /**

@@ -57,3 +57,50 @@ export const updateCurrentUserInfo = asyncHandler(
     res.status(200).json(userDto);
   }
 );
+
+/**
+ * Delete user.
+ * @param req Request.
+ * @param res Response.
+ */
+export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const currentId = (req.user as User).id;
+
+  if (id === currentId) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const user = await prisma.user.delete({
+    where: { id },
+  });
+
+  if (!user) {
+    res.sendStatus(404);
+    return;
+  }
+
+  res.sendStatus(200);
+});
+
+/**
+ * Search users.
+ * @param req Request.
+ * @param res Response.
+ */
+export const searchUsers = asyncHandler(async (req: Request, res: Response) => {
+  const { take, skip } = req.query;
+
+  if (!take || !skip) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const users = await prisma.user.findMany({
+    take: parseInt(take as string),
+    skip: parseInt(skip as string),
+  });
+
+  res.status(200).json(users);
+});

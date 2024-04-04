@@ -1,5 +1,7 @@
 import { RELATIVE_ROUTES } from "@constants";
 import { adController } from "@controllers";
+import { UserRole } from "@enums";
+import { allow } from "@middlewares";
 import express from "express";
 
 /** Express router */
@@ -61,7 +63,7 @@ router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
  *             schema:
  *               $ref: "#/components/schemas/AdDetailsDto"
  */
-router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
+router.put(RELATIVE_ROUTES.AD.UPDATE, allow(UserRole.ADMIN), adController.updateAd);
 
 /**
  * Delete an ad.
@@ -81,7 +83,7 @@ router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
  *       204:
  *         description: Ad deleted
  */
-router.delete(RELATIVE_ROUTES.AD.DELETE, adController.deleteAd);
+router.delete(RELATIVE_ROUTES.AD.DELETE, allow(UserRole.ADMIN), adController.deleteAd);
 
 /**
  * Get ad details.
