@@ -3,6 +3,7 @@ import axios from "axios";
 import { UserDto, UserUpdateDto } from "./models";
 import { User } from "@/models";
 import { AxiosResponse } from "axios";
+import { Observable, from } from "rxjs";
 /* eslint-enable no-unused-vars */
 
 // TODO: Use HTTP service once it's implemented.
@@ -20,7 +21,7 @@ let user = null;
  * Gets the current user.
  * @returns {Promise<User>} The user.
  */
-export const getCurrentUser = async () => {
+export async function getCurrentUser() {
   if (user) {
     return user;
   }
@@ -36,15 +37,15 @@ export const getCurrentUser = async () => {
 
   user = new Promise((resolve) => resolve(newUser));
 
-  return newUser;
-};
+  return user;
+}
 
 /**
  * Updates the current user.
  * @param {UserUpdateDto} user The updated user.
  * @returns {Promise<UserDto>} The updated user.
  */
-export const updateCurrentUser = async (user) => {
+export async function updateCurrentUser(user) {
   /** @type {AxiosResponse<UserDto>} */
   const response = await http.put("/", user);
   const newUser = new User(
@@ -56,5 +57,5 @@ export const updateCurrentUser = async (user) => {
 
   user = new Promise((resolve) => resolve(newUser));
 
-  return newUser;
-};
+  return user;
+}
