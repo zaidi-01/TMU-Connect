@@ -4,11 +4,10 @@
 
   <div class="item-list">
     <div class="item" v-for="item in items" :key="item.id">
-      <img :src="item.imageURL" :alt="Item.name">
-      <h3>{{  item.name  }}</h3>
-      <p>{{  item.description  }}</p>
-      <p class="price">${{  item.price.toFixed(2)  }}</p>
-      <button type="button">Add to Cart</button>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.type }}</p>
+      <p>{{ item.description }}</p>
+      <p class="price">${{ item.price }}</p>
     </div>
   </div>
 </div>
@@ -19,7 +18,7 @@ import Header from './Header.vue'
 
 export default
 {
-  name: 'ForSalePage',
+  name: 'HomePage',
   components:
   {
     Header
@@ -29,12 +28,16 @@ export default
     return {
       navLinks:
       [
-        { id: 1, text: 'ITEMS FOR SALE', route: '/' },
-        {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
-        {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
-        {id: 4, text: 'MAKE NEW POST', route: '/new-post'},
+        { id: 1, text: 'HOME', route: '/' },
+        {id: 2, text: 'POST AN AD', route: '/new-post'},
+        {id: 3, text: 'MY MESSAGES ', route: ''}
       ],
       showDropdown: false,
+      searchQuery: '',
+
+      items:
+      []
+
     };
   },
   methods:
@@ -43,11 +46,24 @@ export default
     {
       this.showDropdown = !this.showDropdown;
     },
+    
     performSearch()
     {
 
     },
-  },
+
+    fetchItems()
+    {
+      fetch('http://localhost:8080/api/ad')
+      .then(response => response.json())
+      .then(data => {
+        this.items = data;
+      })
+      .catch(error => {
+        console.error('Error fetching items', error);
+      });
+    }
+  }
 };
 </script>
 
@@ -65,7 +81,7 @@ export default
   {
     width: 250px;
     margin: 20px;
-    padding: 15px;
+    padding: 12px;
     border: 1px solid black;
     text-align: center;
   }

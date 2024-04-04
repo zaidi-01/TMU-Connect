@@ -1,8 +1,5 @@
-import AcademicServices from '@/components/AcademicServices.vue';
-import ForSale from '@/components/ForSale.vue';
-import ItemsWanted from '@/components/ItemsWanted.vue';
+import Home from '@/components/Home.vue';
 import LoginPage from '@/components/LoginPage.vue';
-import MyAccount from '@/components/MyAccount.vue';
 import NewPost from '@/components/NewPost.vue';
 import SignupPage from '@/components/SignupPage.vue';
 import { createRouter, createWebHistory } from 'vue-router';
@@ -12,25 +9,7 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        component: ForSale,
-    },
-
-    {
-        path: '/items-wanted',
-        name: 'ItemsWanted',
-        component: ItemsWanted,
-    },
-
-    {
-        path: '/academic-services',
-        name: 'AcademicServices',
-        component: AcademicServices,
-    },
-
-    {
-        path: '/my-account',
-        name: 'MyAccount',
-        component: MyAccount,
+        component: Home,
     },
 
     {

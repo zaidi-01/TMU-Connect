@@ -49,10 +49,9 @@ export default
     return {
       navLinks:
       [
-        { id: 1, text: 'ITEMS FOR SALE', route: '/' },
-        {id: 2, text: 'ITEMS WANTED', route: '/items-wanted'},
-        {id: 3, text: 'ACADEMIC SERVICES', route: '/academic-services'},
-        {id: 4, text: 'MAKE NEW POST', route: '/new-post'},
+        { id: 1, text: 'HOME', route: '/' },
+        { id: 2, text: 'POST AN AD', route: '/new-post' },
+        {id: 3, text: 'MY MESSAGES ', route: ''}
       ],
       showDropdown: false,
       searchQuery: '',
