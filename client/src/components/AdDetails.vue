@@ -1,76 +1,111 @@
 <template>
-    <div>
-        <Header />
 
-        <div class="ad-details">
-            <h1 class="ad-title">{{ ad.title }}</h1>
-            <p class="ad-type">{{ ad.type }}</p>
-            <div class="ad-description">{{ ad.description }}</div>
-            <div class="ad-info">
-                <h2 class="price">${{ ad.price }}</h2>
-                <p class="timestamp">Ad Posted: {{ ad.createdAt }}</p>
-                <p class="timestamp">Last Updated: {{ ad.updatedAt }}</p>
-            </div>
-            <div class="message-container">
-                <input type="text" v-model="messageText" placeholder="Message User..." class="message-input">
-                <button class="message-button" @click="sendMessage">Send</button>
-            </div>
-        </div>
-    </div>
+  <Header />
+
+  <div class="ad-details">
+    <p v-if="!ad">Loading...</p>
+    <template v-else>
+      <div class="ad-header">
+        <h1 class="ad-title">{{ ad.title }}</h1>
+        <span>{{ $filters.formatDateTime(ad.createdAt) }}</span>
+      </div>
+      <p class="ad-subtitle">
+        <span class="price">${{ ad.price }}</span> -
+        <span>{{ adTypeMap(ad.type) }}</span>
+      </p>
+      <div class="ad-description">
+        <p>{{ ad.description }}</p>
+      </div>
+      <form @submit.prevent="sendMessage" class="ad-footer">
+        <input v-model="newMessage" placeholder="Type a message..." />
+        <button type="submit">Send</button>
+      </form>
+    </template>
+  </div>
 </template>
 
 <script>
-import Header from './Header.vue'
-import axios from 'axios';
+/* eslint-disable no-unused-vars */
+import Header from "./Header.vue";
+import { adService, roomService } from "@/services";
+import { AdDetails } from "@/models";
+import { AdType } from "@/enums";
+/* eslint-enable no-unused-vars */
 
-export default
-{
-    name: 'AdDetails',
-    components:
-    {
-        Header
+export default {
+  name: "AdDetails",
+  components: {
+    Header,
+  },
+  data() {
+    return {
+      /**
+       * Ad details
+       * @type {AdDetails}
+       */
+      ad: null,
+      /**
+       * New message to send
+       * @type {string}
+       */
+      newMessage: "",
+    };
+  },
+  created() {
+    this.loadAdDetails();
+  },
+  methods: {
+    /**
+     * Load ad details
+     */
+    loadAdDetails() {
+      const adId = this.$route.params.id;
+      adService.getAdById(adId).then((ad) => (this.ad = ad));
     },
-    data()
-    {
-        return {
-            ad:
-            {
-                title: 'Used Car',
-                type:'SALE',
-                description: 'Selling my used car. This is the model, it has this many kilometers on it, no major damages',
-                price: '300',
-                createdAt: "2024-03-17T12:00:00Z",
-                updatedAt:"2024-03-17T12:00:00Z"
-            }
-        };
-    },
-    created()
-    {
-        this.fetchAdDetails();
-    },
-    methods:
-    {
-        fetchAdDetails()
-        {
-            const adId = this.$route.params.id;
-            axios.get(`/api/ad/${adId}`)
-            .then(response => {
-                this.ad = response.data;
-            })
-            .catch(error => {
-                console.error('Error fetching ad details', error);
-            });
-        },
-        sendMessage()
-        {
+    
+    /**
+     * Sends a chat message.
+     */
+    sendMessage() {
+      if (!this.newMessage || !this.ad) {
+        return;
+      }
 
-        }
-    }
+      roomService.sendAdMessage(this.ad.id, this.newMessage).then(() => {
+        this.newMessage = "";
+      });
+
+    },
+    /**
+     * Maps the ad type to a human-readable string.
+     * @param {keyof AdType} type The ad type.
+     * @returns {string} The human-readable string.
+     */
+    adTypeMap(type) {
+      switch (type) {
+        case AdType.SALE:
+          return "For Sale";
+        case AdType.WANTED:
+          return "Wanted";
+        case AdType.SERVICE:
+          return "Service";
+      }
+    },
+  },
 };
-
 </script>
 
 <style scoped>
+.ad-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ad-footer {
+  width: 100%;
+}
 
 .ad-details
 {
@@ -106,9 +141,8 @@ export default
     
 }
 
-.price
-{
-    font-weight: bold;
+.ad-description {
+  flex: 1;
 }
 
 .timestamp
@@ -150,3 +184,4 @@ export default
         }
 
 </style>
+

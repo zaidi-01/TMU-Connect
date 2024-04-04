@@ -47,9 +47,14 @@ const routes = [
   },
 
   {
-    path: "/ad/{id}",
+    path: "/ad/:id",
     name: "AdDetails",
     component: AdDetails,
+  },
+
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: "/",
   },
 ];
 

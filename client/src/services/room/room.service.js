@@ -10,6 +10,7 @@ import {
   map,
   take,
 } from "rxjs";
+import * as authService from "../auth/auth.service";
 import * as userService from "../user/user.service";
 import * as webSocketService from "../websocket/websocket.service";
 import { WebSocketChatAction } from "./enums";
@@ -26,64 +27,70 @@ const _message$ = new Subject();
 /** @type {Observable<Room[]>} */
 export const rooms$ = _rooms$.asObservable();
 
-webSocketService
-  .once$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_LIST)
-  .subscribe(
-    /**
-     * Handle the room list.
-     * @param {{ id: number, name: string }[]} roomsData The room list data.
-     */
-    (roomsData) => {
-      _rooms$.next(
-        roomsData.map((roomData) => roomFromData(roomData.id, roomData.name))
+authService.isAuthenticated$
+  .pipe(filter((isAuthenticated) => isAuthenticated))
+  .subscribe(() => {
+    webSocketService
+      .once$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_LIST)
+      .subscribe(
+        /**
+         * Handle the room list.
+         * @param {{ id: number, name: string }[]} roomsData The room list data.
+         */
+        (roomsData) => {
+          _rooms$.next(
+            roomsData.map((roomData) =>
+              roomFromData(roomData.id, roomData.name)
+            )
+          );
+        }
       );
-    }
-  );
-webSocketService
-  .on$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_CREATED)
-  .subscribe(
-    /**
-     * Handle the room creation.
-     * @param {{ id: number, name: string }} roomData The room data.
-     */
-    (roomData) => {
-      _rooms$.next([
-        ..._rooms$.value,
-        roomFromData(roomData.id, roomData.name),
-      ]);
-    }
-  );
-combineLatest([
-  webSocketService.on$(
-    WebSocketMessageType.CHAT,
-    WebSocketChatAction.ROOM_MESSAGE
-  ),
-  userService.getCurrentUser(),
-]).subscribe(
-  /**
-   * Handle the room message.
-   * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }} messageData The message data.
-   * @param {User} currentUser The current user.
-   */
-  ([messageData, currentUser]) => {
-    _message$.next(
-      new ChatMessage(
-        messageData.id,
-        messageData.roomId,
-        messageData.content,
-        messageData.userId,
-        messageData.createdAt,
-        messageData.updatedAt,
-        messageData.userId === currentUser.id
-      )
+    webSocketService
+      .on$(WebSocketMessageType.CHAT, WebSocketChatAction.ROOM_CREATED)
+      .subscribe(
+        /**
+         * Handle the room creation.
+         * @param {{ id: number, name: string }} roomData The room data.
+         */
+        (roomData) => {
+          _rooms$.next([
+            ..._rooms$.value,
+            roomFromData(roomData.id, roomData.name),
+          ]);
+        }
+      );
+    combineLatest([
+      webSocketService.on$(
+        WebSocketMessageType.CHAT,
+        WebSocketChatAction.ROOM_MESSAGE
+      ),
+      userService.getCurrentUser(),
+    ]).subscribe(
+      /**
+       * Handle the room message.
+       * @param {{ id: number, roomId: number, content: string, userId: number, createdAt: Date, updatedAt: Date }} messageData The message data.
+       * @param {User} currentUser The current user.
+       */
+      ([messageData, currentUser]) => {
+        _message$.next(
+          new ChatMessage(
+            messageData.id,
+            messageData.roomId,
+            messageData.content,
+            messageData.userId,
+            messageData.createdAt,
+            messageData.updatedAt,
+            messageData.userId === currentUser.id
+          )
+        );
+      }
     );
-  }
-);
 
-webSocketService.sendAction(
-  WebSocketMessageType.CHAT,
-  WebSocketChatAction.ROOM_LIST
-);
+    webSocketService.sendAction(
+      WebSocketMessageType.CHAT,
+      WebSocketChatAction.ROOM_LIST
+    );
+  });
 
 /**
  * Send a chat message by ad ID.
