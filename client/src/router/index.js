@@ -33,8 +33,8 @@ const routes = [
     },
 
     {
-        path: '/communication',
-        name: 'Communication',
+        path: '/messages',
+        name: 'Messages',
         component: CommunicationPage,
     },
 
