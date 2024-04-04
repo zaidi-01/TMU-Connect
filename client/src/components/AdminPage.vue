@@ -4,61 +4,78 @@
     <h1>Admin Dashboard</h1>
     <nav>
       <ul>
-        <li @click="currentTab = 'ads'">Manage Ads</li>
-        <li @click="currentTab = 'users'">Manage Users</li>
+        <li @click="switchTab('ads')">Manage Ads</li>
+        <li @click="switchTab('users')">Manage Users</li>
       </ul>
     </nav>
     <div class="feedback-message" v-if="feedbackMessage">{{ feedbackMessage }}</div>
     <section v-if="currentTab === 'users'">
       <h2>Users Management</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>
-              <button @click="deleteUser(user.id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <span v-if="!users">Loading...</span>
+      <template v-if="users">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="user in users" :key="user.id">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <button @click="deleteUser(user.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button v-if="!allUsersLoaded" @click="loadUsers">Load More</button>
+      </template>
     </section>
 
     <section v-if="currentTab === 'ads'">
       <h2>Ads Management</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="ad in ads" :key="ad.id">
-            <td>{{ ad.title }}</td>
-            <td>
-              <button @click="deleteAd(ad.id)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <span v-if="!ads">Loading...</span>
+      <template v-if="ads">
+        <table>
+          <thead>
+            <tr>
+              <th class="id">ID</th>
+              <th class="title">Title</th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="ad in ads" :key="ad.id">
+              <td>{{ ad.id }}</td>
+              <td>{{ ad.title }}</td>
+              <td>
+                <button @click="deleteAd(ad.id)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button v-if="!allAdsLoaded" @click="loadAds">Load More</button>
+      </template>
     </section>
-
   </div>
 </template>
 
 
 <script>
+/* eslint-disable no-unused-vars */
 import { AdDetails, User } from '@/models';
 import { adService, userService } from '@/services';
 import Header from './Header.vue';
+/* eslint-enable no-unused-vars */
+
+/**
+ * The number of items to load per page.
+ * @type {number}
+ */
+const ITEMS_PER_PAGE = 20;
 
 export default {
   name: 'ItemsWanted',
@@ -83,7 +100,21 @@ export default {
        * @type {null | User[]}
        */
       users: null,
+      /**
+       * The feedback message to display.
+       * @type {string}
+       */
       feedbackMessage: '',
+      /**
+       * Whether all ads have been loaded.
+       * @type {boolean}
+       */
+      allAdsLoaded: false,
+      /**
+       * Whether all users have been loaded.
+       * @type {boolean}
+       */
+      allUsersLoaded: false,
     };
   },
   methods: {
@@ -91,8 +122,11 @@ export default {
      * Loads the ads.
      */
     loadAds() {
-      adService.getAds(20, this.ads ? this.ads.length : 0)
-        .then((ads) => this.ads ? this.ads.push(...ads) : this.ads = ads
+      adService.getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0)
+        .then((ads) => {
+          this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
+          this.ads ? this.ads.push(...ads) : this.ads = ads;
+        }
         )
         .catch(error => console.error("Error fetching ads", error));
     },
@@ -100,8 +134,11 @@ export default {
      * Loads the users.
      */
     loadUsers() {
-      userService.getUsers(20, this.users ? this.users.length : 0)
-        .then((users) => this.users ? this.users.push(...users) : this.users = users)
+      userService.getUsers(ITEMS_PER_PAGE, this.users ? this.users.length : 0)
+        .then((users) => {
+          this.allUsersLoaded = users.length < ITEMS_PER_PAGE;
+          this.users ? this.users.push(...users) : this.users = users;
+        })
         .catch(error => console.error("Error fetching users", error));
     },
     /**
@@ -209,5 +246,18 @@ section h2 {
 
 table {
   width: 100%;
+  margin-bottom: 10px;
+}
+
+table .id {
+  width: 10%;
+}
+
+table .title {
+  width: 70%;
+}
+
+table .actions {
+  width: 10%;
 }
 </style>

@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { AdDetails, AdFilterOptions, AdSortOptions } from "@/models";
 import axios, { AxiosResponse } from "axios";
 import * as authService from "../auth/auth.service";
+/* eslint-enable no-unused-vars */
 
 // TODO: Add DTOs
 
@@ -69,13 +71,11 @@ export async function getAdById(id) {
  */
 export async function getAds(take, skip, filterOptions, sortOptions) {
   /** @type {AxiosResponse<AdDetails[]>} */
-  const response = await http.get("/search", {
-    params: {
-      take,
-      skip,
-      filterOptions,
-      sortOptions,
-    },
+  const response = await http.post("/search", {
+    take,
+    skip,
+    filterOptions,
+    sortOptions,
   });
   return response.data;
 }
