@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import axios from "axios";
-import { UserDto, UserUpdateDto } from "./models";
 import { User } from "@/models";
-import { AxiosResponse } from "axios";
-import { Observable, from } from "rxjs";
+import axios, { AxiosResponse } from "axios";
+import * as authService from "../auth/auth.service";
+import { UserDto } from "./models";
+import { UserRole } from "@/enums";
 /* eslint-enable no-unused-vars */
 
 // TODO: Use HTTP service once it's implemented.
@@ -42,8 +42,8 @@ export async function getCurrentUser() {
 
 /**
  * Updates the current user.
- * @param {UserUpdateDto} user The updated user.
- * @returns {Promise<UserDto>} The updated user.
+ * @param {User} user The updated user.
+ * @returns {Promise<User>} The updated user.
  */
 export async function updateCurrentUser(user) {
   /** @type {AxiosResponse<UserDto>} */
@@ -58,4 +58,55 @@ export async function updateCurrentUser(user) {
   user = new Promise((resolve) => resolve(newUser));
 
   return user;
+}
+
+/**
+ * Get users.
+ * @param {number} take Number of users to take.
+ * @param {number} skip Number of users to skip.
+ * @returns {Promise<User[]>} Users.
+ */
+export async function getUsers(take, skip) {
+  if (!(await authService.isAdmin())) {
+    return;
+  }
+
+  /** @type {AxiosResponse<UserDto[]>} */
+  const response = await http.get("/search", {
+    params: {
+      take,
+      skip,
+    },
+  });
+
+  return response.data.map(
+    (user) => new User(user.id, user.name, user.email, user.role)
+  );
+}
+
+/**
+ * Delete a user.
+ * @param {number} id User ID.
+ * @returns {Promise<void>} Empty promise.
+ */
+export async function deleteUser(id) {
+  if (!(await authService.isAdmin()) || (await getCurrentUser()).id === id) {
+    return;
+  }
+
+  await http.delete(`/${id}`);
+}
+
+/**
+ * Update user role.
+ * @param {number} id User ID.
+ * @param {keyof UserRole} role User role.
+ * @returns {Promise<void>} Empty promise.
+ */
+export async function updateUserRole(id, role) {
+  if (!(await authService.isAdmin()) || (await getCurrentUser()).id === id) {
+    return;
+  }
+
+  await http.put(`/${id}/role`, { role });
 }

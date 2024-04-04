@@ -1,5 +1,7 @@
 import { RELATIVE_ROUTES } from "@constants";
 import { adController } from "@controllers";
+import { UserRole } from "@enums";
+import { allow } from "@middlewares";
 import express from "express";
 
 /** Express router */
@@ -10,7 +12,7 @@ const router = express.Router();
 // TODO: Add error responses for all routes.
 
 /**
- * Create an ad
+ * Create an ad.
  *
  * @swagger
  * /ad:
@@ -34,7 +36,7 @@ const router = express.Router();
 router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
 
 /**
- * Update an ad
+ * Update an ad.
  *
  * @swagger
  * /ad/{id}:
@@ -61,10 +63,10 @@ router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
  *             schema:
  *               $ref: "#/components/schemas/AdDetailsDto"
  */
-router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
+router.put(RELATIVE_ROUTES.AD.UPDATE, allow(UserRole.ADMIN), adController.updateAd);
 
 /**
- * Delete an ad
+ * Delete an ad.
  *
  * @swagger
  * /ad/{id}:
@@ -81,10 +83,10 @@ router.put(RELATIVE_ROUTES.AD.UPDATE, adController.updateAd);
  *       204:
  *         description: Ad deleted
  */
-router.delete(RELATIVE_ROUTES.AD.DELETE, adController.deleteAd);
+router.delete(RELATIVE_ROUTES.AD.DELETE, allow(UserRole.ADMIN), adController.deleteAd);
 
 /**
- * Get ad details
+ * Get ad details.
  *
  * @swagger
  * /ad/{id}:

@@ -1,4 +1,5 @@
-import { UserRole, User } from "@prisma/client";
+import { UserRole } from "@enums";
+import { User } from "@prisma/client";
 import passport from "passport";
 
 /**
