@@ -53,7 +53,7 @@ export default
       [
         { id: 1, text: 'HOME', route: '/' },
         { id: 2, text: 'POST AN AD', route: '/new-post' },
-        {id: 3, text: 'MY MESSAGES ', route: ''}
+        {id: 3, text: 'MY MESSAGES ', route: '/messages'}
       ],
       showDropdown: false,
       searchQuery: '',

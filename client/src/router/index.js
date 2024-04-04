@@ -1,5 +1,6 @@
 import Home from '@/components/Home.vue';
 import LoginPage from '@/components/LoginPage.vue';
+import CommunicationPage from '@/components/CommunicationPage.vue';
 import NewPost from '@/components/NewPost.vue';
 import SignupPage from '@/components/SignupPage.vue';
 import AdDetails from '@/components/AdDetails.vue';
@@ -29,6 +30,12 @@ const routes = [
         path: '/register',
         name: 'Register',
         component: SignupPage,
+    },
+
+    {
+        path: "/messages",
+        name: "Messages",
+        component: CommunicationPage
     },
 
     {

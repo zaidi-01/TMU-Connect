@@ -9,9 +9,12 @@
             <div class="ad-info">
                 <h2 class="price">${{ ad.price }}</h2>
                 <p class="timestamp">Ad Posted: {{ ad.createdAt }}</p>
-                <p class="timestamp">Ad Updated: {{ ad.updatedAt }}</p>
+                <p class="timestamp">Last Updated: {{ ad.updatedAt }}</p>
             </div>
-            <button class="message-button" @click="sendMessage">Message User</button>
+            <div class="message-container">
+                <input type="text" v-model="messageText" placeholder="Message User..." class="message-input">
+                <button class="message-button" @click="sendMessage">Send</button>
+            </div>
         </div>
     </div>
 </template>
@@ -114,9 +117,20 @@ export default
     margin-bottom: 2px;
 }
 
-.message-button
+.message-container
 {
     align-self: flex-end;
+}
+
+.message-input
+{
+    font-size: 16px;
+    padding: 6px;
+    margin-right: 2px;
+}
+
+.message-button
+{
     background-color: yellow;
     color: rgb(0, 0, 222);
     font-weight: bold;
