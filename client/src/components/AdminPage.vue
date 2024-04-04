@@ -16,17 +16,19 @@
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Actions</th>
+              <th class="id">ID</th>
+              <th class="name">Name</th>
+              <th class="email">Email</th>
+              <th class="">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in users" :key="user.id">
+              <td>{{ user.id }}</td>
               <td>{{ user.name }}</td>
               <td>{{ user.email }}</td>
               <td>
-                <button @click="deleteUser(user.id)">Delete</button>
+                <button v-bind:disabled="user.id === userId" @click="deleteUser(user.id)">Delete</button>
               </td>
             </tr>
           </tbody>
@@ -90,6 +92,11 @@ export default {
        * @type {null | "ads" | "users"}
        */
       currentTab: null,
+      /**
+       * Current user ID.
+       * @type {number}
+       */
+      userId: 0,
       /**
        * The ads that are being displayed.
        * @type {null | AdDetails[]}
@@ -203,6 +210,7 @@ export default {
   },
   mounted() {
     this.switchTab('ads');
+    userService.getCurrentUser().then((user) => this.userId = user.id);
   }
 };
 </script>
@@ -249,15 +257,23 @@ table {
   margin-bottom: 10px;
 }
 
-table .id {
+.id {
   width: 10%;
 }
 
-table .title {
+.title {
   width: 70%;
 }
 
-table .actions {
+.name {
+  width: 40%;
+}
+
+.email {
+  width: 40%;
+}
+
+.actions {
   width: 10%;
 }
 </style>
