@@ -1,8 +1,16 @@
 import axios from "axios";
+import { BehaviorSubject, distinctUntilChanged } from "rxjs";
 import { RegisterDto } from "./models";
 
 // TODO: Use HTTP service once it's implemented.
-axios.defaults.baseURL = "/api/auth";
+const http = axios.create({
+  baseURL: "/api/auth",
+});
+
+const _isAuthenticated$ = new BehaviorSubject(false);
+export const isAuthenticated$ = _isAuthenticated$
+  .asObservable()
+  .pipe(distinctUntilChanged());
 
 /**
  * Checks if a user is authenticated.
@@ -10,9 +18,11 @@ axios.defaults.baseURL = "/api/auth";
  */
 export const isAuthenticated = async () => {
   try {
-    await axios.get("/");
+    await http.get("/");
+    _isAuthenticated$.next(true);
     return true;
   } catch {
+    _isAuthenticated$.next(false);
     return false;
   }
 };
@@ -24,7 +34,7 @@ export const isAuthenticated = async () => {
  * @returns {Promise} The response data.
  */
 export const login = async (email, password) => {
-  const response = await axios.post("/login", { email, password });
+  const response = await http.post("/login", { email, password });
   return response.data;
 };
 
@@ -36,7 +46,7 @@ export const login = async (email, password) => {
  * @returns {Promise} The response data.
  */
 export const register = async (name, email, password) => {
-  const response = await axios.post(
+  const response = await http.post(
     "/register",
     new RegisterDto(name, email, password)
   );
@@ -49,7 +59,7 @@ export const register = async (name, email, password) => {
  */
 export const logout = async () => {
   return new Promise((resolve, reject) => {
-    axios
+    http
       .post("/logout")
       .then(() => resolve())
       .catch((error) => reject(error));

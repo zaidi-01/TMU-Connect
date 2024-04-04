@@ -1,5 +1,6 @@
+import { UserRole } from "@enums";
 import { UserDto } from "@models";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
 import { UserUpdateDto } from "./models";
@@ -17,9 +18,15 @@ const prisma = new PrismaClient();
  */
 export const getCurrentUserInfo = asyncHandler(
   async (req: Request, res: Response) => {
-    const user = req.user as UserDto;
+    const user = req.user as User;
+    const userDto: UserDto = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role as UserRole,
+    };
 
-    res.status(200).json(user);
+    res.status(200).json(userDto);
   }
 );
 
@@ -33,14 +40,20 @@ export const updateCurrentUserInfo = asyncHandler(
     const user = req.user as UserDto;
     const { name, email } = req.body as UserUpdateDto;
 
-    const updatedUser = (await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         name: name || user.name,
         email: email || user.email,
       },
-    })) as UserDto;
+    });
+    const userDto: UserDto = {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role as UserRole,
+    };
 
-    res.status(200).json(updatedUser);
+    res.status(200).json(userDto);
   }
 );

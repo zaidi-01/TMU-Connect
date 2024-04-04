@@ -3,25 +3,27 @@
     <Header />
     <aside class="chat-list">
       <h2 class="chat-title">Chats</h2>
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-      <ul>
-        <li v-for="chat in chats" :key="chat.id" @click="selectChat(chat)">
-          {{ chat.postTitle }} with {{ chat.name }}
+      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <p v-if="!rooms && !errorMessage">Loading chats...</p>
+      <p v-if="rooms && !rooms.length && !errorMessage">No chats available</p>
+      <ul v-if="rooms && rooms.length">
+        <li v-for="room in rooms" :key="room.id" @click="selectRoom(room)">
+          {{ room.name }}
         </li>
       </ul>
     </aside>
     <section class="chat-window">
-      <div class="chat-header" v-if="currentChat">
-        <h3>{{ currentChat.postTitle }} with {{ currentChat.name }}</h3>
+      <div class="chat-header" v-if="currentRoom">
+        <h3>{{ currentRoom.name }}</h3>
       </div>
-      <div class="messages" v-if="currentChat">
-        <div v-for="message in currentChat.messages" :key="message.id" class="message">
-          <div :class="{'mine': message.isMine}">
+      <div ref="messages" class="messages" v-if="currentRoom">
+        <div v-for="message in messages" :key="message.id" class="message">
+          <div :class="{ 'local': message.isLocal }">
             {{ message.content }}
           </div>
         </div>
       </div>
-      <form @submit.prevent="sendMessage" v-if="currentChat">
+      <form @submit.prevent="sendMessage" v-if="currentRoom">
         <input v-model="newMessage" placeholder="Type a message...">
         <button type="submit">Send</button>
       </form>
@@ -31,8 +33,12 @@
 
 
 <script>
-import Header from './Header.vue'
-import axios from 'axios';
+/* eslint-disable no-unused-vars */
+import { ChatMessage, Room } from '@/models';
+import { roomService } from '@/services';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import Header from './Header.vue';
+/* eslint-enable no-unused-vars */
 
 export default {
   name: 'CommunicationPage',
@@ -42,58 +48,90 @@ export default {
   },
   data() {
     return {
-      // Sample data for testing
-      //chats: [
-      //  { id: 1, name: 'John Doe', postTitle: "Selling Textbooks", messages: [
-      //    { id: 1, content: 'Testing chat', isMine: false },
-      //    { id: 2, content: 'Testing chat from user', isMine: true }
-      //  ] }
-      //],
-
-      // Fetch this from backend 
-      chats: [],
-      currentChat: null,
+      /** @type {Room[]} */
+      rooms: null,
+      /** @type {Room} */
+      currentRoom: null,
+      /** @type {ChatMessage[]} */
+      messages: [],
+      /** @type {Subscription} */
+      messagesSubscription: null,
+      /** @type {Subject} */
+      destroy$: new Subject(),
       newMessage: '',
       errorMessage: '',
-
-
     };
   },
   methods: {
-    selectChat(chat) {
-      this.currentChat = chat;
+    /**
+     * Selects a chat room.
+     * @param {Room} room The chat room to select.
+     */
+    selectRoom(room) {
+      this.currentRoom = room;
+
+      this.messagesSubscription?.unsubscribe();
+      this.messagesSubscription = this.currentRoom.messages$
+        .pipe(
+          takeUntil(this.destroy$),
+        )
+        .subscribe({
+          next: messages => {
+            this.messages = messages;
+
+            this.scrollToBottom();
+          },
+          error: error => {
+            // TODO: Handle chat messages error separately
+            this.errorMessage = error.message;
+          },
+        });
     },
+    /**
+   * Fetches chat rooms.
+   */
+    getRooms() {
+      roomService.rooms$
+        .pipe(
+          takeUntil(this.destroy$),
+        )
+        .subscribe({
+          next: rooms => {
+            this.rooms = rooms;
+          },
+          error: error => {
+            this.errorMessage = error.message;
+          },
+        });
+    },
+    /**
+     * Sends a chat message.
+     */
     sendMessage() {
-      if (this.newMessage.trim() !== '') {
-        // Simulate sending a message
-        const message = {
-          id: Date.now(),
-          content: this.newMessage,
-          isMine: true
-        };
-        // Push the new message to the current chat
-        this.currentChat.messages.push(message);
-        // Clear the input field
-        this.newMessage = '';
+      if (!this.newMessage || !this.currentRoom) {
+        return;
       }
+
+      this.currentRoom.sendMessage(this.newMessage);
+      this.newMessage = '';
     },
-    fetchChats() {
-        axios.get('/api/chats')
-          .then(response => {
-            this.chats = response.data;
-            // Clear error message if user chats have been accessed 
-             this.errorMessage = ''; 
-          })
-          .catch(error => {
-            console.error('There was an error in accessing the chats:', error);
-            // Show the error
-            this.errorMessage = 'Failed to load chats. Please try again later.';
-          });
-      },
+    /**
+     * Scrolls to the bottom of the chat window.
+     */
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const messages = this.$refs.messages;
+        messages.scrollTop = messages.scrollHeight;
+      });
+    },
   },
-   mounted() {
-      this.fetchChats();
-    },
+  mounted() {
+    this.getRooms();
+  },
+  beforeUnmount() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  },
 };
 </script>
 
@@ -109,44 +147,57 @@ export default {
 }
 
 .chat-list {
-  width: 30%; 
-  background: #f2f2f2; 
-  overflow-y: auto; 
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  background: #f2f2f2;
+  overflow-y: auto;
+}
+
+.chat-list .loader {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  color: #666;
 }
 
 .chat-list ul {
-  list-style-type: none; 
-  padding-left: 0; 
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .chat-list li {
   padding: 5px;
-  border-bottom: 1px solid #ccc; 
-  cursor: pointer; 
-  transition: background-color 0.3s; 
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .chat-list li:hover {
-  background-color: #e3e3e3; 
+  background-color: #e3e3e3;
 }
 
-.chat-list, .chat-window {
-  padding-top: 20px; 
+.chat-list,
+.chat-window {
+  padding-top: 20px;
 }
 
 .chat-title {
-  padding: 10px 20px; 
-  border-bottom: 1px solid #ccc; 
-  background-color: #f2f2f2; 
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+  background-color: #f2f2f2;
 }
 
-.chat-title, .chat-header h3 {
+.chat-title,
+.chat-header h3 {
   margin: 0;
-  padding: 0 20px; 
+  padding: 0 20px;
 }
 
 .chat-window {
-  width: 70%; 
+  width: 70%;
   padding: 0 20px;
   display: flex;
   flex-direction: column;
@@ -154,38 +205,38 @@ export default {
 
 .chat-header {
   padding: 10px 20px;
-  background-color: #f2f2f2; 
+  background-color: #f2f2f2;
   border-bottom: 1px solid #ddd;
 }
 
 .chat-header h3 {
   margin: 0;
-  font-size: 1.25rem; 
-  font-weight: normal; 
+  font-size: 1.25rem;
+  font-weight: normal;
 }
 
 .messages {
   flex-grow: 1;
-  overflow-y: auto; 
+  overflow-y: auto;
 }
 
 .message {
   display: flex;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   padding: 5px;
 }
 
-.message .mine {
-  justify-content: flex-end; 
-  background-color: #cbe6ef; 
-  margin-left: auto; 
+.message .local {
+  justify-content: flex-end;
+  background-color: #cbe6ef;
+  margin-left: auto;
 }
 
 .message div {
-  max-width: 80%; 
+  max-width: 80%;
   padding: 10px;
-  border-radius: 10px; 
-  background-color: #f1f0f0; 
+  border-radius: 10px;
+  background-color: #f1f0f0;
 }
 
 form {
