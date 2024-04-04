@@ -6,11 +6,11 @@
     <template v-else>
       <div class="ad-header">
         <h1 class="ad-title">{{ ad.title }}</h1>
-        <span>{{ ad.createdAt }}</span>
+        <span>{{ $filters.formatDateTime(ad.createdAt) }}</span>
       </div>
       <p class="ad-subtitle">
         <span class="price">${{ ad.price }}</span> -
-        <span>{{ ad.type }}</span>
+        <span>{{ adTypeMap(ad.type) }}</span>
       </p>
       <div class="ad-description">
         <p>{{ ad.description }}</p>
@@ -28,6 +28,7 @@
 import Header from "./Header.vue";
 import { adService, roomService } from "@/services";
 import { AdDetails } from "@/models";
+import { AdType } from "@/enums";
 /* eslint-enable no-unused-vars */
 
 export default {
@@ -71,6 +72,21 @@ export default {
       roomService.sendAdMessage(this.ad.id, this.newMessage).then(() => {
         this.newMessage = "";
       });
+    },
+    /**
+     * Maps the ad type to a human-readable string.
+     * @param {keyof AdType} type The ad type.
+     * @returns {string} The human-readable string.
+     */
+    adTypeMap(type) {
+      switch (type) {
+        case AdType.SALE:
+          return "For Sale";
+        case AdType.WANTED:
+          return "Wanted";
+        case AdType.SERVICE:
+          return "Service";
+      }
     },
   },
 };
