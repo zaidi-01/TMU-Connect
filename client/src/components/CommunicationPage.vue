@@ -3,11 +3,9 @@
     <Header />
     <aside class="chat-list">
       <h2 class="chat-title">Chats</h2>
-      <div class="loader">
-        <p v-if="errorMessage">{{ errorMessage }}</p>
-        <p v-if="!rooms && !errorMessage">Loading chats...</p>
-        <p v-if="rooms && !rooms.length && !errorMessage">No chats available</p>
-      </div>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <p v-if="!rooms && !errorMessage">Loading chats...</p>
+      <p v-if="rooms && !rooms.length && !errorMessage">No chats available</p>
       <ul v-if="rooms && rooms.length">
         <li v-for="room in rooms" :key="room.id" @click="selectRoom(room)">
           {{ room.name }}
@@ -16,9 +14,9 @@
     </aside>
     <section class="chat-window">
       <div class="chat-header" v-if="currentRoom">
-        <h3>{{ currentRoom.postTitle }} with {{ currentRoom.name }}</h3>
+        <h3>{{ currentRoom.name }}</h3>
       </div>
-      <div class="messages" v-if="currentRoom">
+      <div ref="messages" class="messages" v-if="currentRoom">
         <div v-for="message in messages" :key="message.id" class="message">
           <div :class="{ 'local': message.isLocal }">
             {{ message.content }}
@@ -80,6 +78,8 @@ export default {
         .subscribe({
           next: messages => {
             this.messages = messages;
+
+            this.scrollToBottom();
           },
           error: error => {
             // TODO: Handle chat messages error separately
@@ -103,7 +103,27 @@ export default {
             this.errorMessage = error.message;
           },
         });
-    }
+    },
+    /**
+     * Sends a chat message.
+     */
+    sendMessage() {
+      if (!this.newMessage || !this.currentRoom) {
+        return;
+      }
+
+      this.currentRoom.sendMessage(this.newMessage);
+      this.newMessage = '';
+    },
+    /**
+     * Scrolls to the bottom of the chat window.
+     */
+    scrollToBottom() {
+      this.$nextTick(() => {
+        const messages = this.$refs.messages;
+        messages.scrollTop = messages.scrollHeight;
+      });
+    },
   },
   mounted() {
     this.getRooms();
