@@ -1,100 +1,138 @@
 <template>
-    <div>
-        <Header />
+  <Header />
 
-        <div class="ad-details">
-            <h1 class="ad-title">{{ ad.title }}</h1>
-            <div class="ad-info">
-                <p>{{ ad.type }}</p>
-                <p>{{ ad.description }}</p>
-                <p class="price">${{ ad.price }}</p>
-                <p class="timestamp">Ad Posted: {{ ad.createdAt }}</p>
-                <p class="timestamp">Ad Updated: {{ ad.updatedAt }}</p>
-            </div>
-            <button class="message-button" @click="sendMessage">Message User</button>
-        </div>
-    </div>
+  <div class="ad-details">
+    <p v-if="!ad">Loading...</p>
+    <template v-else>
+      <div class="ad-header">
+        <h1 class="ad-title">{{ ad.title }}</h1>
+        <span>{{ ad.createdAt }}</span>
+      </div>
+      <p class="ad-subtitle">
+        <span class="price">${{ ad.price }}</span> -
+        <span>{{ ad.type }}</span>
+      </p>
+      <div class="ad-description">
+        <p>{{ ad.description }}</p>
+      </div>
+      <form @submit.prevent="sendMessage" class="ad-footer">
+        <input v-model="newMessage" placeholder="Type a message..." />
+        <button type="submit">Send</button>
+      </form>
+    </template>
+  </div>
 </template>
 
 <script>
-import Header from './Header.vue'
-import axios from 'axios';
+/* eslint-disable no-unused-vars */
+import Header from "./Header.vue";
+import { adService, roomService } from "@/services";
+import { AdDetails } from "@/models";
+/* eslint-enable no-unused-vars */
 
-export default
-{
-    name: 'AdDetails',
-    components:
-    {
-        Header
+export default {
+  name: "AdDetails",
+  components: {
+    Header,
+  },
+  data() {
+    return {
+      /**
+       * Ad details
+       * @type {AdDetails}
+       */
+      ad: null,
+      /**
+       * New message to send
+       * @type {string}
+       */
+      newMessage: "",
+    };
+  },
+  created() {
+    this.loadAdDetails();
+  },
+  methods: {
+    /**
+     * Load ad details
+     */
+    loadAdDetails() {
+      const adId = this.$route.params.id;
+      adService.getAdById(adId).then((ad) => (this.ad = ad));
     },
-    data()
-    {
-        return {
-            ad: {title: 'Item 1', type:'SALE', description: 'This is the test item', price: '300', createdAt: "2024-03-17T12:00:00Z", updatedAt: "2024-03-17T12:00:00Z"}
-        };
-    },
-    created()
-    {
-        this.fetchAdDetails();
-    },
-    methods:
-    {
-        fetchAdDetails()
-        {
-            const adId = this.$route.params.id;
-            axios.get(`/api/ad/${adId}`)
-            .then(response => {
-                this.ad = response.data;
-            })
-            .catch(error => {
-                console.error('Error fetching ad details', error);
-            });
-        },
-        sendMessage()
-        {
+    /**
+     * Sends a chat message.
+     */
+    sendMessage() {
+      if (!this.newMessage || !this.ad) {
+        return;
+      }
 
-        }
-    }
+      roomService.sendAdMessage(this.ad.id, this.newMessage).then(() => {
+        this.newMessage = "";
+      });
+    },
+  },
 };
-
 </script>
 
 <style scoped>
-
-.ad-title
-{
-    font-weight: bold;
+.ad-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.ad-details
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    height: 70%;
-    padding: 20px;
+.ad-footer {
+  width: 100%;
 }
 
-.ad-info
-{
-    width: 70%
+.ad-title {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-.price
-{
-    font-weight: bold;
+.ad-subtitle {
+  margin: 0;
 }
 
-.timestamp
-{
-    font-size: 0.8em;
+.ad-details {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 160px 25% 60px 25%;
 }
 
-.message-button
-{
-    align-self: flex-end;
-    margin-top: 20px;
+.ad-description {
+  flex: 1;
 }
 
+.price {
+  font-weight: bold;
+}
+
+.timestamp {
+  font-size: 0.8em;
+}
+
+.message-button {
+  align-self: flex-end;
+  margin-top: 20px;
+}
+
+form {
+  display: flex;
+  margin-top: 10px;
+}
+
+input {
+  flex-grow: 1;
+  margin-right: 5px;
+}
+
+button {
+  padding: 6px 12px;
+}
 </style>

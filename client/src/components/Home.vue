@@ -2,10 +2,11 @@
   <div>
     <Header />
 
-    <p v-if="!ads">Loading ads...</p>
-    <div v-if="ads" class="item-list">
-      <p v-if="!ads.length">No ads found</p>
+    <div class="item-list">
+      <p v-if="!ads">Loading ads...</p>
+      <p v-if="ads && !ads.length">No ads found</p>
       <div
+        v-else
         class="item"
         v-for="ad in ads"
         :key="ad.id"
@@ -18,7 +19,7 @@
       </div>
     </div>
 
-    <div v-if="!allAdsLoaded">
+    <div v-if="!allAdsLoaded && ads">
       <button @click="loadAds">Load More</button>
     </div>
   </div>
@@ -36,7 +37,7 @@ import { AdType } from "@/enums";
  * Items per page.
  * @type {number}
  */
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 50;
 
 export default {
   name: "HomePage",
@@ -90,7 +91,7 @@ export default {
      * @param {number} adID The ad ID.
      */
     viewAdDetails(adID) {
-      this.$router.push({ name: "AdDetails", params: { id: adID } });
+      this.$router.push(`/ad/${adID}`);
     },
   },
   mounted() {
@@ -104,7 +105,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  padding-top: 150px;
+  margin-top: 150px;
 }
 
 .item {
