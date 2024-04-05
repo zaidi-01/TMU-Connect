@@ -5,7 +5,7 @@ import Home from "@/components/Home.vue";
 import LoginPage from "@/components/LoginPage.vue";
 import NewPost from "@/components/NewPost.vue";
 import SignupPage from "@/components/SignupPage.vue";
-import { authService } from "@/services";
+// import { authService } from "@/services";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
@@ -62,7 +62,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+/* router.beforeEach(async (to, from, next) => {
   const adminPages = ["/admin"];
   const publicPages = ["/login", "/register"];
   const adminRequired = adminPages.includes(to.path);
@@ -87,6 +87,6 @@ router.beforeEach(async (to, from, next) => {
   }
 
   next();
-});
+}); */
 
 export default router;

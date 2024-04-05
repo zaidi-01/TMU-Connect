@@ -2,17 +2,7 @@
   <div>
     <Header />
 
-    <div class="search-bar">
-          <input
-            type="text"
-            v-model="searchQuery"
-            @input="performSearch"
-            placeholder="Search TMU Connect..."
-          />
-          <button class="search-button" @click="performSearch">
-            &#128269;
-          </button>
-    </div>
+    <SearchBar v-model="searchQuery" @input="performSearch" />
 
     <div class="item-list">
       <p v-if="!ads">Loading ads...</p>
@@ -40,6 +30,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import Header from "./Header.vue";
+import SearchBar from "./SearchBar.vue";
 import { adService } from "@/services";
 import { AdDetails } from "@/models";
 import { AdType } from "@/enums";
@@ -55,6 +46,7 @@ export default {
   name: "HomePage",
   components: {
     Header,
+    SearchBar,
   },
   data() {
     return {
@@ -115,24 +107,15 @@ export default {
 </script>
 
 <style scoped>
-.search-bar {
-  display: flex;
-  margin-top: 150px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.search-bar input {
-  margin-right: 2px;
-}
-
-.search-button {
-  margin-right: 15px;
-}
 
 button {
   cursor: pointer;
   background-color: rgb(255, 255, 138);
+}
+
+.search-bar {
+  margin-top: 150px;
+  align-items: center;
 }
 
 .item-list {
@@ -177,9 +160,4 @@ button {
   color: rgb(0, 0, 222);
 }
 
-@media (max-width: 768px) {
-  .search-bar {
-    margin-left: auto;
-  }
-}
 </style>
