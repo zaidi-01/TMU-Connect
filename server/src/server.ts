@@ -171,17 +171,28 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
 if (process.env.NODE_ENV !== "production") {
-app.use(
-  ROUTES.DOCS_ROUTE.BASE,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
-);
+  app.use(
+    ROUTES.DOCS_ROUTE.BASE,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
+  );
 }
 
 /** Routes */
 app.use(ROUTES.AUTH.BASE, authRoutes);
 app.use(ROUTES.AD.BASE, authenticate(), adRoutes);
 app.use(ROUTES.USER.BASE, authenticate(), userRoutes);
+
+/** Static files */
+
+// Serve client files in production
+if (process.env.NODE_ENV === "production") {
+  const CLIENT_DIST = "../client/dist";
+  app.use(express.static(CLIENT_DIST));
+  app.get("*", (req, res) => {
+    res.sendFile("index.html", { root: `${CLIENT_DIST}` });
+  });
+}
 
 const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
