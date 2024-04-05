@@ -6,9 +6,6 @@
         @input="performSearch"
         placeholder="Search TMU Connect..."
     />
-    <button class="search-button" @click="performSearch">
-        &#128269;
-    </button>
 </div>
 </template>
 
@@ -32,23 +29,14 @@ export default {
 
 <style scoped>
 
-.search-bar {
-  display: flex;
-  margin-top: 150px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
 .search-bar input {
-  margin-right: 2px;
+    width: 350px;
+    height: 20px;
+    border-radius: 20px;
+    border: 2px solid rgb(0, 0, 222);
+    padding: 5px 10px;
+    font-size: 16px; 
 }
 
-.search-button {
-  margin-right: 15px;
-}
 
-button {
-  cursor: pointer;
-  background-color: rgb(255, 255, 138);
-}
 </style>

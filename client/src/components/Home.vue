@@ -30,6 +30,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import Header from "./Header.vue";
+import SearchBar from "./SearchBar.vue";
 import { adService } from "@/services";
 import { AdDetails } from "@/models";
 import { AdType } from "@/enums";
@@ -112,6 +113,11 @@ button {
   background-color: rgb(255, 255, 138);
 }
 
+.search-bar {
+  margin-top: 150px;
+  align-items: center;
+}
+
 .item-list {
   display: flex;
   flex-wrap: wrap;
@@ -154,9 +160,4 @@ button {
   color: rgb(0, 0, 222);
 }
 
-@media (max-width: 768px) {
-  .search-bar {
-    margin-left: auto;
-  }
-}
 </style>

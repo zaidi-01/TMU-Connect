@@ -2,6 +2,7 @@
   <div class="admin-dashboard">
     <Header />
     <h1>Admin Dashboard</h1>
+    <SearchBar v-model="searchQuery" @input="performSearch" />
     <nav>
       <ul>
         <li @click="switchTab('ads')">Manage Ads</li>
@@ -84,6 +85,7 @@ import { UserRole } from "@/enums";
 import { AdDetails, User } from "@/models";
 import { adService, userService } from "@/services";
 import Header from "./Header.vue";
+import SearchBar from "./SearchBar.vue";
 /* eslint-enable no-unused-vars */
 
 /**
@@ -96,6 +98,7 @@ export default {
   name: "ItemsWanted",
   components: {
     Header,
+    SearchBar
   },
   data() {
     return {
