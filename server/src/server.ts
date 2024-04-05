@@ -5,7 +5,8 @@ import { adRoutes, authRoutes, userRoutes } from "@routes";
 import { webSocketService } from "@services";
 import { Password } from "@utilities";
 import cookieParser from "cookie-parser";
-import express from "express";
+import express, { Request, Response } from "express";
+import createHttpError, { HttpError } from "http-errors";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 import { Strategy as CookieStrategy } from "passport-cookie";
@@ -33,23 +34,21 @@ passport.use(
           email,
         },
       })
-      .then((user) => {
+      .then(async (user) => {
         if (!user) {
-          return done(null, false);
+          return done(createHttpError(400, "Invalid email or password"));
         }
 
-        return Password.comparePassword(user.password, password).then(
-          (isMatch) => {
-            if (isMatch) {
-              return done(null, user);
-            }
+        const isMatch = await Password.comparePassword(user.password, password);
+        if (isMatch) {
+          return done(null, user);
+        }
 
-            return done(null, false);
-          }
-        );
+        done(createHttpError(400, "Invalid email or password"));
       })
       .catch((error) => {
-        return done(error, false);
+        console.error(error);
+        done(error);
       });
   })
 );
@@ -193,6 +192,20 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile("index.html", { root: `${CLIENT_DIST}` });
   });
 }
+
+/** Error handling middleware */
+app.use((err: Error, req: Request, res: Response, next: any) => {
+  // Handle HTTP errors
+  if (err instanceof HttpError) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  // Handle other errors
+  console.error(err);
+});
 
 const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
