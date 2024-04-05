@@ -8,6 +8,17 @@ import { RegisterDto } from "./models";
 const http = axios.create({
   baseURL: "/api/auth",
 });
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Set error message to response data if available
+    if (error.response.data.message) {
+      error.message = error.response.data.message;
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 const _isAuthenticated$ = new BehaviorSubject(false);
 export const isAuthenticated$ = _isAuthenticated$

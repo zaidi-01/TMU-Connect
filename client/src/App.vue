@@ -5,15 +5,13 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-}
+  name: "App",
+};
 </script>
 
 <style>
-#app
-{
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -21,5 +19,10 @@ export default {
   color: #2c3e50;
   padding: 0px;
   margin: 0px;
+}
+
+body {
+  margin: 0;
+  background-color: #f8f9fa;
 }
 </style>
