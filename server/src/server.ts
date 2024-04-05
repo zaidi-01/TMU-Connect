@@ -205,6 +205,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
   // Handle other errors
   console.error(err);
+  return res
+    .status(500)
+    .json({ message: "An error occurred. Please try again." });
 });
 
 const http = app.listen(port, () => {
