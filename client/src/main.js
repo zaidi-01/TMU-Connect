@@ -4,6 +4,9 @@ import router from "./router";
 
 const app = createApp(App).use(router);
 
+/* Global filters */
+
+// Date time filter
 app.config.globalProperties.$filters = {
   formatDateTime(value) {
     const date = new Date(value);
