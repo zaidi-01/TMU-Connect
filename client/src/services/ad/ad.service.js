@@ -20,15 +20,20 @@ const http = axios.create({
  * @param {keyof AdType } type Ad type.
  * @returns {Promise<AdDetails>} Created ad.
  */
-export async function createAd(title, description, price, type) {
+export async function createAd(title, description, price, type, image) {
   const ad = {
     title,
     description,
     price,
     type,
+    image,
   };
   /** @type {AxiosResponse<AdDetails>} */
-  const response = await http.post("/", ad);
+  const response = await http.post("/", ad, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 }
 
