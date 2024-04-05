@@ -5,7 +5,7 @@ import { adRoutes, authRoutes, userRoutes } from "@routes";
 import { webSocketService } from "@services";
 import { Password } from "@utilities";
 import cookieParser from "cookie-parser";
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { HttpError } from "http-errors";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
@@ -194,7 +194,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 /** Error handling middleware */
-app.use((err: Error, req: Request, res: Response, next: any) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   // Handle HTTP errors
   if (err instanceof HttpError) {
     if (!err.statusCode) {
