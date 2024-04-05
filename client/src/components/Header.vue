@@ -36,18 +36,6 @@
       </nav>
 
       <div class="search-login-container">
-        <div class="search-bar">
-          <input
-            type="text"
-            v-model="searchQuery"
-            @input="performSearch"
-            placeholder="Search TMU Connect..."
-          />
-          <button class="search-button" @click="performSearch">
-            &#128269;
-          </button>
-        </div>
-
         <button v-if="isAdmin" class="admin-button">
           <router-link to="/admin">&#128274;</router-link>
         </button>
@@ -69,7 +57,6 @@ export default {
         { id: 3, text: "MY MESSAGES ", route: "/messages" },
       ],
       showDropdown: false,
-      searchQuery: "",
       /**
        * Whether the user is an admin.
        * @type {boolean}
@@ -80,8 +67,7 @@ export default {
   methods: {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
-    },
-    performSearch() {},
+    }
   },
   mounted() {
     authService.isAdmin().then((isAdmin) => {
@@ -183,18 +169,6 @@ a {
 .search-login-container {
   display: flex;
   align-items: center;
-}
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-bar input {
-  margin-right: 2px;
-}
-
-.search-button {
-  margin-right: 15px;
 }
 
 .admin-button {
