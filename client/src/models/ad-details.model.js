@@ -9,8 +9,9 @@ class AdDetails {
    * @param {string} description
    * @param {number} price
    * @param {number} userId
+   * @param {string} image
    */
-  constructor(id, title, description, price, userId) {
+  constructor(id, title, description, price, userId, image) {
     /**
      * Ad ID.
      * @type {number}
@@ -31,6 +32,11 @@ class AdDetails {
      * @type {number}
      */
     this.price = price;
+    /**
+     * Ad image.
+     * @type {string}
+     */
+    this.image = image;
     /**
      * Ad user ID.
      * @type {number}

@@ -51,10 +51,10 @@ export function deleteFile(filePath: string): Promise<void> {
  * Move a file.
  * @param oldPath The old file path.
  * @param newPath The new file path.
- * @returns A promise that resolves when the file is moved.
+ * @returns A promise that resolves with the new file path.
  */
-export function moveFile(oldPath: string, newPath: string): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
+export function moveFile(oldPath: string, newPath: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     const filePath = path.join(BASE_PATH, newPath);
     const dir = path.dirname(filePath);
 
@@ -66,7 +66,7 @@ export function moveFile(oldPath: string, newPath: string): Promise<void> {
           if (err) {
             reject(err);
           } else {
-            resolve();
+            resolve(filePath);
           }
         });
       }

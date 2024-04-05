@@ -57,7 +57,25 @@ export const createAd = asyncHandler(async (req: Request, res: Response) => {
     const oldPath = req.file.path;
     const newPath = `ad/${createdAd.id}/${req.file.filename}`;
 
-    await fileService.moveFile(oldPath, newPath);
+    try {
+      const imagePath = await fileService.moveFile(oldPath, newPath);
+      createdAd = (await prisma.ad.update({
+        where: {
+          id: createdAd.id,
+        },
+        data: {
+          image: imagePath,
+        },
+      })) as AdDetailsDto;
+    } catch (error) {
+      await prisma.ad.delete({
+        where: {
+          id: createdAd.id,
+        },
+      });
+
+      throw error;
+    }
   }
 
   res.status(201).json(createdAd);
