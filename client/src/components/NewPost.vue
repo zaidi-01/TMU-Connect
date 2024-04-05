@@ -25,6 +25,7 @@
             type="file"
             accept="image/*"
             style="display: none"
+            @change="handleImageUpload"
           />
           <label for="file-upload" class="custom-file-upload">
             <div class="image-upload-overlay">
