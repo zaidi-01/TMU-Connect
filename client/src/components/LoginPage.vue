@@ -46,7 +46,7 @@
       <h3>Connecting all TMU Students: This is your ultimate hub to:</h3>
       <ul>
         <li>Buy and Sell Resources</li>
-        <li>Browse Acadmic Services</li>
+        <li>Browse Academic Services</li>
         <li>Connect with Other TMU Students</li>
       </ul>
     </div>
@@ -97,7 +97,6 @@ export default {
 .login-page {
   display: flex;
   position: relative;
-  min-height: 100vh;
 }
 
 .login-form-container,
