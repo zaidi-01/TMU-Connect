@@ -40,6 +40,9 @@ export const createAd = asyncHandler(async (req: Request, res: Response) => {
     userId: (req.user as User).id,
   } as Ad;
 
+  // TODO: Reserve ad ID before creating ad.
+  // That way, if the image rename fails, the ad doesn't get created.
+  // And ad has renamed image path.
   let createdAd: AdDetailsDto;
   try {
     createdAd = (await prisma.ad.create({

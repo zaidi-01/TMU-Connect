@@ -87,10 +87,8 @@ export default {
         .then(() => {
           window.alert("Your ad has been created successfully");
 
-          // this.type = AdType.SALE;
-          // this.title = "";
-          // this.description = "";
-          // this.price = null;
+          this.imageData = null;
+          formData.reset();
         })
         .catch((error) => {
           console.error("Error creating ad", error);
