@@ -4,18 +4,18 @@
   <div class="ad-details">
     <p v-if="!ad">Loading...</p>
     <template v-else>
-      <div class="ad-header">
-        <h1 class="ad-title">{{ ad.title }}</h1>
+      <div class="ad-details-header">
+        <h1 class="ad-details-title">{{ ad.title }}</h1>
         <span>{{ $filters.formatDateTime(ad.createdAt) }}</span>
       </div>
-      <p class="ad-subtitle">
+      <p class="ad-details-subtitle">
         <span class="price">${{ ad.price }}</span> -
         <span>{{ adTypeMap(ad.type) }}</span>
       </p>
-      <div class="ad-description">
+      <div class="ad-details-description">
         <p>{{ ad.description }}</p>
       </div>
-      <form @submit.prevent="sendMessage" class="ad-footer">
+      <form @submit.prevent="sendMessage" class="ad-details-footer">
         <input v-model="newMessage" placeholder="Type a message..." />
         <button type="submit">Send</button>
       </form>
@@ -93,23 +93,23 @@ export default {
 </script>
 
 <style scoped>
-.ad-header {
+.ad-details-header {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.ad-footer {
+.ad-details-footer {
   width: 100%;
 }
 
-.ad-title {
+.ad-details-title {
   font-weight: bold;
   margin-bottom: 10px;
 }
 
-.ad-subtitle {
+.ad-details-subtitle {
   margin: 0;
 }
 
@@ -121,7 +121,7 @@ export default {
   padding: 160px 25% 60px 25%;
 }
 
-.ad-description {
+.ad-details-description {
   flex: 1;
 }
 

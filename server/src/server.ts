@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ROUTES } from "@constants";
+import { COOKIE_NAME, RELATIVE_ROUTES, ROUTES } from "@constants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
@@ -86,7 +86,7 @@ passport.use(
 // Cookie strategy
 const cookieOptions = {
   cookieName: COOKIE_NAME,
-  signed: process.env.NODE_ENV === "production",
+  signed: false,
   passReqToCallback: false,
 };
 passport.use(
@@ -170,16 +170,29 @@ const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
-app.use(
-  ROUTES.DOCS_ROUTE.BASE,
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
-);
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    ROUTES.DOCS_ROUTE.BASE,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
+  );
+}
 
 /** Routes */
 app.use(ROUTES.AUTH.BASE, authRoutes);
 app.use(ROUTES.AD.BASE, authenticate(), adRoutes);
 app.use(ROUTES.USER.BASE, authenticate(), userRoutes);
+
+/** Static files */
+
+// Serve client files in production
+if (process.env.NODE_ENV === "production") {
+  const CLIENT_DIST = "../client/dist";
+  app.use(express.static(CLIENT_DIST));
+  app.get("*", (req, res) => {
+    res.sendFile("index.html", { root: `${CLIENT_DIST}` });
+  });
+}
 
 const http = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -187,7 +200,7 @@ const http = app.listen(port, () => {
 
 /** Websocket server */
 http.on("upgrade", (request, socket, head) => {
-  if (request.url !== "/ws") {
+  if (request.url !== RELATIVE_ROUTES.WS) {
     socket.destroy();
     return;
   }

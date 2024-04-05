@@ -1,8 +1,12 @@
-// Base routes for the application.
-const AD_ROUTE = "/ad";
-const AUTH_ROUTE = "/auth";
-const DOCS_ROUTE = "/docs";
-const USER_ROUTE = "/user";
+// Base rooute for the API
+const BASE_ROUTE = process.env.NODE_ENV === "production" ? "/api" : "";
+
+// Base routes for the application
+const AD_ROUTE = `${BASE_ROUTE}/ad`;
+const AUTH_ROUTE = `${BASE_ROUTE}/auth`;
+const DOCS_ROUTE = `${BASE_ROUTE}/docs`;
+const USER_ROUTE = `${BASE_ROUTE}/user`;
+const WS_ROUTE = `${BASE_ROUTE}/ws`;
 
 const AD_ROUTES = {
   BASE: "/",
@@ -61,4 +65,5 @@ export const RELATIVE_ROUTES = {
   AUTH: AUTH_ROUTES,
   DOCS: DOCS_ROUTES,
   USER: USER_ROUTES,
+  WS: WS_ROUTE,
 };
