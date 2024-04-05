@@ -9,10 +9,6 @@ import FilterOptions from "./filter-options.model";
  *     AdSearchDto:
  *       type: object
  *       properties:
- *         query:
- *           description: The search query.
- *           type: string
- *           example: "car"
  *         take:
  *           description: The number of ads to take.
  *           type: integer

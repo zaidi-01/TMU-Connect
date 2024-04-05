@@ -1,6 +1,8 @@
 import { Ad, PrismaClient, User } from "@prisma/client";
+import { fileService } from "@services";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
+import createHttpError from "http-errors";
 import { AdCreateUpdateDto, AdDetailsDto, AdSearchDto } from "./models";
 
 /** Prisma client */
@@ -17,16 +19,46 @@ const prisma = new PrismaClient();
  * @param res Response
  */
 export const createAd = asyncHandler(async (req: Request, res: Response) => {
-  const adDto = req.body as AdCreateUpdateDto;
+  const { type, title, description, price } = req.body as AdCreateUpdateDto;
+
+  if (!type || !title || !description || !price) {
+    throw createHttpError(400, "Missing required fields");
+  }
+
+  let priceFloat: number;
+  try {
+    priceFloat = parseFloat(price);
+  } catch (error) {
+    throw createHttpError(400, "Invalid price");
+  }
 
   const ad = {
-    ...adDto,
+    type,
+    title,
+    description,
+    price: priceFloat,
     userId: (req.user as User).id,
   } as Ad;
 
-  const createdAd = (await prisma.ad.create({
-    data: ad,
-  })) as AdDetailsDto;
+  let createdAd: AdDetailsDto;
+  try {
+    createdAd = (await prisma.ad.create({
+      data: ad,
+    })) as AdDetailsDto;
+  } catch (error) {
+    if (req.file) {
+      await fileService.deleteFile(req.file.path);
+    }
+
+    throw error;
+  }
+
+  if (req.file) {
+    const oldPath = req.file.path;
+    const newPath = `ad/${createdAd.id}/${req.file.filename}`;
+
+    await fileService.moveFile(oldPath, newPath);
+  }
 
   res.status(201).json(createdAd);
 });
@@ -38,10 +70,26 @@ export const createAd = asyncHandler(async (req: Request, res: Response) => {
  */
 export const updateAd = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const adDto = req.body as AdCreateUpdateDto;
+  const { type, title, description, price } = req.body as AdCreateUpdateDto;
+
+  if (!type || !title || !description || !price) {
+    throw createHttpError(400, "Missing required fields");
+  }
+
+  let priceFloat: number;
+  try {
+    priceFloat = parseFloat(price);
+  } catch (error) {
+    throw createHttpError(400, "Invalid price");
+  }
+
+  // TODO: Handle image upload.
 
   const ad = {
-    ...adDto,
+    type,
+    title,
+    description,
+    price: priceFloat,
     userId: (req.user as User).id,
   } as Ad;
 
