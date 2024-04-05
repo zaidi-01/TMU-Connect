@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ROUTES } from "@constants";
+import { COOKIE_NAME, RELATIVE_ROUTES, ROUTES } from "@constants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
@@ -200,7 +200,7 @@ const http = app.listen(port, () => {
 
 /** Websocket server */
 http.on("upgrade", (request, socket, head) => {
-  if (request.url !== "/ws") {
+  if (request.url !== RELATIVE_ROUTES.WS) {
     socket.destroy();
     return;
   }
