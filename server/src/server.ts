@@ -170,11 +170,13 @@ const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
+if (process.env.NODE_ENV !== "production") {
 app.use(
   ROUTES.DOCS_ROUTE.BASE,
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpecs, swaggerUiOptions)
 );
+}
 
 /** Routes */
 app.use(ROUTES.AUTH.BASE, authRoutes);
