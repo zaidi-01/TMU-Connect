@@ -166,3 +166,7 @@ yarn-error.log
 
 ### MacOS ###
 *.DS_Store
+
+### Misc ###
+# Uploads
+uploads/
