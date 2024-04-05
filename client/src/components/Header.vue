@@ -6,7 +6,6 @@
         TMU community.
       </p>
     </div>
-
     <div class="logo-menu-container">
       <div class="dropdown-menu">
         <button @click="toggleDropdown">≡</button>
@@ -36,21 +35,10 @@
       </nav>
 
       <div class="search-login-container">
-        <div class="search-bar">
-          <input
-            type="text"
-            v-model="searchQuery"
-            @input="performSearch"
-            placeholder="Search TMU Connect..."
-          />
-          <button class="search-button" @click="performSearch">
-            &#128269;
-          </button>
-        </div>
-
         <button v-if="isAdmin" class="admin-button">
           <router-link to="/admin">&#128274;</router-link>
         </button>
+        <button class="logout-button" @click="performUserLogout">Logout</button>
       </div>
     </div>
   </div>
@@ -81,7 +69,15 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
-    performSearch() {},
+    performUserLogout() {
+      authService.logout().then(() => {
+        // Redirect user to the login page 
+        this.$router.push('/login');
+      }).catch(error => {
+        // Handle any errors during logout
+        console.error('Logout failed:', error);
+      });
+    },
   },
   mounted() {
     authService.isAdmin().then((isAdmin) => {
@@ -180,23 +176,6 @@ a {
   border-bottom: 2px solid blue;
 }
 
-.search-login-container {
-  display: flex;
-  align-items: center;
-}
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-bar input {
-  margin-right: 2px;
-}
-
-.search-button {
-  margin-right: 15px;
-}
-
 .admin-button {
   margin-right: 25px;
 }
@@ -207,10 +186,6 @@ button {
 }
 
 @media (max-width: 768px) {
-  .search-bar {
-    margin-left: auto;
-  }
-
   .header-menu {
     display: none;
   }
