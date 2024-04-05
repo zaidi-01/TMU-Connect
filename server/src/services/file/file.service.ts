@@ -6,7 +6,8 @@ import path from "path";
 
 /* File service */
 
-const BASE_PATH = "uploads";
+// TODO: Get the base path from the environment variables.
+export const BASE_PATH = "uploads";
 
 export const upload = multer({
   storage: multer.diskStorage({

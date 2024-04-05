@@ -2,7 +2,7 @@ import { COOKIE_NAME, RELATIVE_ROUTES, ROUTES } from "@constants";
 import { authenticate } from "@middlewares";
 import { PrismaClient } from "@prisma/client";
 import { adRoutes, authRoutes, userRoutes } from "@routes";
-import { webSocketService } from "@services";
+import { fileService, webSocketService } from "@services";
 import { Password } from "@utilities";
 import cookieParser from "cookie-parser";
 import express, { NextFunction, Request, Response } from "express";
@@ -192,6 +192,9 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile("index.html", { root: `${CLIENT_DIST}` });
   });
 }
+
+// Serve uploads directory
+app.use(RELATIVE_ROUTES.UPLOADS, express.static(fileService.BASE_PATH));
 
 /** Error handling middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -6,6 +6,7 @@ const AD_ROUTE = `${BASE_ROUTE}/ad`;
 const AUTH_ROUTE = `${BASE_ROUTE}/auth`;
 const DOCS_ROUTE = `${BASE_ROUTE}/docs`;
 const USER_ROUTE = `${BASE_ROUTE}/user`;
+const UPLOADS_ROUTE = "/uploads";
 const WS_ROUTE = `${BASE_ROUTE}/ws`;
 
 const AD_ROUTES = {
@@ -65,5 +66,6 @@ export const RELATIVE_ROUTES = {
   AUTH: AUTH_ROUTES,
   DOCS: DOCS_ROUTES,
   USER: USER_ROUTES,
+  UPLOADS: UPLOADS_ROUTE,
   WS: WS_ROUTE,
 };

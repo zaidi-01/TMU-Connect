@@ -53,7 +53,6 @@
 
 <script>
 import Header from "./Header.vue";
-import { AdType } from "@/enums";
 import { adService } from "@/services";
 
 export default {
