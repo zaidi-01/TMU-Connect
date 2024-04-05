@@ -1,36 +1,59 @@
 <template>
   <div class="signup-page">
-    <img src="../assets/TMU_Logo.svg" alt="TMU Logo" class="logo">
+    <img src="../assets/TMU_Logo.svg" alt="TMU Logo" class="logo" />
     <div class="signup-form-container">
       <div class="signup-form">
         <h1>Sign Up</h1>
         <div class="toggle-buttons">
-          <router-link v-for="link in links" :key="link.name" :to="link.to" class="toggle-btn">
-            {{ link.name }}
+          <router-link
+            v-for="link in links"
+            :key="link.name"
+            :to="link.to"
+            class="toggle-btn"
+          >
+            <button class="toggle-btn">{{ link.name }}</button>
           </router-link>
           <button class="toggle-btn active">Create account</button>
         </div>
 
         <form @submit.prevent="signup">
-          <div v-if="error" class="error-message">{{ error }}</div>
+          <p v-if="error" class="error-message">
+            {{ error }}
+          </p>
           <div class="input-field">
             <label for="name">Full Name*</label>
-            <input type="name" id="name" v-model="name" placeholder="Jane Doe" required>
+            <input
+              type="name"
+              id="name"
+              v-model="name"
+              placeholder="Jane Doe"
+              required
+            />
           </div>
           <div class="input-field">
             <label for="email">Email*</label>
-            <input type="email" id="email" v-model="email" placeholder="jane@torontomu.ca" required>
+            <input
+              type="email"
+              id="email"
+              v-model="email"
+              placeholder="jane@torontomu.ca"
+              required
+            />
           </div>
 
           <div class="input-field">
             <label for="password">Password*</label>
-            <input type="password" id="password" v-model="password" placeholder="***********" required>
+            <input
+              type="password"
+              id="password"
+              v-model="password"
+              placeholder="***********"
+              required
+            />
           </div>
 
           <button type="submit" class="signup-btn">Sign up</button>
         </form>
-
-
       </div>
     </div>
     <!-- Right side with heading -->
@@ -48,16 +71,16 @@
 </template>
 
 <script>
-import { authService } from '@/services';
+import { authService } from "@/services";
 
 export default {
   data() {
     return {
-      links: [{ name: 'Log in', to: '/login' }],
-      name: '',
-      email: '',
-      password: '',
-      error: '',
+      links: [{ name: "Log in", to: "/login" }],
+      name: "",
+      email: "",
+      password: "",
+      error: "",
     };
   },
   methods: {
@@ -68,22 +91,18 @@ export default {
       }
 
       // Handle response from the backend.
-      authService.register(this.name, this.email, this.password)
+      authService
+        .register(this.name, this.email, this.password)
         .then(() => {
           // Handle response from the backend.
           // showing a success message, or storing a session token.
-          console.log('Signup successful');
+          console.log("Signup successful");
           // TODO: add flag to show success message
-          this.$router.push('/login'); // Redirect to login page
+          this.$router.push("/login"); // Redirect to login page
         })
-        .catch(error => {
-          // TODO: Test error handling
-          console.error('Signup error:', error);
-          if (error.response && error.response.data) {
-            this.error = error.response.data.message; // Assuming the backend sends back an error message
-          } else {
-            this.error = 'An unexpected server error occurred.';
-          }
+        .catch((error) => {
+          console.error("Signup error:", error);
+          this.error = error.message;
         });
     },
   },
@@ -117,7 +136,6 @@ export default {
   margin: 0;
 }
 
-
 .signup-form {
   max-width: 400px;
   width: 100%;
@@ -142,6 +160,8 @@ export default {
 }
 
 .input-field {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 1em;
 }
 
@@ -151,7 +171,7 @@ export default {
 }
 
 .input-field input {
-  width: 100%;
+  flex: 1;
   padding: 0.5em;
   border: 1px solid #ddd;
 }
@@ -176,6 +196,9 @@ export default {
   margin-bottom: 1em;
 }
 
+.signup-btn:hover {
+  background-color: #0f2c7b;
+}
 
 .right-side {
   flex: 1;
@@ -202,7 +225,7 @@ export default {
 }
 
 .right-side li::before {
-  content: '✔';
+  content: "✔";
   color: yellow;
   font-size: 24px;
   position: absolute;
@@ -214,6 +237,11 @@ export default {
   font-size: 4em;
 }
 
+.error-message {
+  padding: 0.5em;
+  color: white;
+  background-color: #cc0000;
+}
 
 @media (max-width: 768px) {
   .signup-page {
