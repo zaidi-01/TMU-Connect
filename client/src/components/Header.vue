@@ -6,7 +6,6 @@
         TMU community.
       </p>
     </div>
-
     <div class="logo-menu-container">
       <div class="dropdown-menu">
         <button @click="toggleDropdown">≡</button>
@@ -39,6 +38,7 @@
         <button v-if="isAdmin" class="admin-button">
           <router-link to="/admin">&#128274;</router-link>
         </button>
+        <button class="logout-button" @click="performUserLogout">Logout</button>
       </div>
     </div>
   </div>
@@ -76,7 +76,8 @@ export default {
         // Handle any errors during logout
         console.error('Logout failed:', error);
       });
-    }
+    },
+
   },
   mounted() {
     authService.isAdmin().then((isAdmin) => {
@@ -185,10 +186,6 @@ button {
 }
 
 @media (max-width: 768px) {
-  .search-bar {
-    margin-left: auto;
-  }
-
   .header-menu {
     display: none;
   }

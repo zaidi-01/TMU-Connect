@@ -1,15 +1,17 @@
 import { COOKIE_NAME } from "@constants";
 import { PrismaClient, User } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
 import { default as asyncHandler } from "express-async-handler";
+import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 import { RegisterDto } from "./models";
 
-/** Prisma client */
+/* Prisma client */
 const prisma = new PrismaClient();
 
-/** Auth controller */
+/* Auth controller */
 
 /**
  * Check if the user is authenticated.
@@ -34,17 +36,37 @@ export const isAuthenticated = asyncHandler(async (req, res) => {
  */
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body as RegisterDto;
+
+  if (!name || !email || !password) {
+    throw createHttpError(400, "Missing required fields");
+  }
+
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@torontomu.ca$/;
+
+  if (!emailRegex.test(email)) {
+    throw createHttpError(400, "Must have a valid torontomu.ca email");
+  }
+
   const hashedPassword = await Password.hashPassword(password);
 
-  // TODO: Add input validation
+  try {
+    await prisma.user.create({
+      data: {
+        name: name,
+        email: email,
+        password: hashedPassword,
+      } as User,
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw createHttpError(400, "Email already exists");
+    }
 
-  await prisma.user.create({
-    data: {
-      name: name,
-      email: email,
-      password: hashedPassword,
-    } as User,
-  });
+    throw error;
+  }
 
   res.status(201).end();
 });
@@ -56,12 +78,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
  * @param res Response.
  */
 export const login = asyncHandler(async (req, res) => {
-  if (!req.user) {
-    res.status(400);
-    throw new Error("Invalid email or password.");
-  }
-
-  req.logIn(req.user, { session: false }, (error) => {
+  req.logIn(req.user!, { session: false }, (error) => {
     if (error) {
       res.status(400);
       throw error;
