@@ -69,7 +69,7 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
-    performLogout() {
+    performUserLogout() {
       authService.logout().then(() => {
         // Redirect user to the login page 
         this.$router.push('/login');
