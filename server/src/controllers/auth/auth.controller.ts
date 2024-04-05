@@ -76,7 +76,7 @@ export const login = asyncHandler(async (req, res) => {
     res
       .cookie(COOKIE_NAME, accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env.SSL === "true",
       })
       .sendStatus(200);
   });

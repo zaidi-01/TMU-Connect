@@ -86,7 +86,7 @@ passport.use(
 // Cookie strategy
 const cookieOptions = {
   cookieName: COOKIE_NAME,
-  signed: process.env.NODE_ENV === "production",
+  signed: false,
   passReqToCallback: false,
 };
 passport.use(
