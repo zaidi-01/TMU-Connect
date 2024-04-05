@@ -85,6 +85,8 @@ export default {
   },
   methods: {
     signup() {
+      this.error = "";
+
       // Handle signup
       if (!this.name || !this.email || !this.password) {
         this.error = "Please fill in the required fields.";

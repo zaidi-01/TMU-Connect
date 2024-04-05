@@ -67,6 +67,8 @@ export default {
   },
   methods: {
     login() {
+      this.error = "";
+
       // User must enter information for both fields
       if (!this.email || !this.password) {
         alert("Please fill in all required fields.");
