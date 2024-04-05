@@ -67,6 +67,15 @@ export default {
   methods: {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
+    },
+    performUserLogout() {
+      authService.logout().then(() => {
+        // Redirect user to the login page 
+        this.$router.push('/login');
+      }).catch(error => {
+        // Handle any errors during logout
+        console.error('Logout failed:', error);
+      });
     }
   },
   mounted() {
@@ -164,11 +173,6 @@ a {
 
 .header-menu a:hover {
   border-bottom: 2px solid blue;
-}
-
-.search-login-container {
-  display: flex;
-  align-items: center;
 }
 
 .admin-button {
