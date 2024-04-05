@@ -57,7 +57,6 @@ export default {
         { id: 3, text: "MY MESSAGES ", route: "/messages" },
       ],
       showDropdown: false,
-      searchQuery: "",
       /**
        * Whether the user is an admin.
        * @type {boolean}
@@ -78,6 +77,7 @@ export default {
         console.error('Logout failed:', error);
       });
     },
+
   },
   mounted() {
     authService.isAdmin().then((isAdmin) => {

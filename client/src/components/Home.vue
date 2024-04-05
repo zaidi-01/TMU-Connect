@@ -2,6 +2,18 @@
   <div>
     <Header />
 
+    <div class="search-bar">
+          <input
+            type="text"
+            v-model="searchQuery"
+            @input="performSearch"
+            placeholder="Search TMU Connect..."
+          />
+          <button class="search-button" @click="performSearch">
+            &#128269;
+          </button>
+    </div>
+
     <div class="item-list">
       <p v-if="!ads">Loading ads...</p>
       <p v-if="ads && !ads.length">No ads found</p>
@@ -56,6 +68,7 @@ export default {
        * @type {boolean}
        */
       allAdsLoaded: false,
+      searchQuery: "",
     };
   },
   methods: {
@@ -71,6 +84,7 @@ export default {
         })
         .catch((error) => console.error("Error fetching ads", error));
     },
+    performSearch() {},
     /**
      * Maps the ad type to a human-readable string.
      * @param {keyof AdType} type The ad type.
@@ -101,11 +115,31 @@ export default {
 </script>
 
 <style scoped>
+.search-bar {
+  display: flex;
+  margin-top: 150px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.search-bar input {
+  margin-right: 2px;
+}
+
+.search-button {
+  margin-right: 15px;
+}
+
+button {
+  cursor: pointer;
+  background-color: rgb(255, 255, 138);
+}
+
 .item-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  margin-top: 150px;
+  
 }
 
 .item {
@@ -141,5 +175,11 @@ export default {
 .price {
   font-weight: bold;
   color: rgb(0, 0, 222);
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+    margin-left: auto;
+  }
 }
 </style>
