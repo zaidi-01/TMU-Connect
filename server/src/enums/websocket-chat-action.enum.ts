@@ -12,6 +12,7 @@ enum WebSocketChatAction {
   ROOM_CREATED = "ROOM_CREATED",
   /** List of rooms. */
   ROOM_LIST = "ROOM_LIST",
+  // TODO: Add action to handle room deletion.
 }
 
 export default WebSocketChatAction;

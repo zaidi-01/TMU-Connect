@@ -59,16 +59,16 @@ model Room {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   adId            Int
-  ad              Ad                @relation(fields: [adId], references: [id])
+  ad              Ad                @relation(fields: [adId], references: [id], onDelete: Cascade)
   Message         Message[]
   RoomParticipant RoomParticipant[]
 }
 
 model RoomParticipant {
   userId Int
-  User   User @relation(fields: [userId], references: [id])
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   roomId Int
-  Room   Room @relation(fields: [roomId], references: [id])
+  Room   Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   @@id([userId, roomId])
 }
@@ -81,5 +81,5 @@ model Message {
   userId    Int
   User      User     @relation(fields: [userId], references: [id])
   roomId    Int
-  Room      Room     @relation(fields: [roomId], references: [id])
+  Room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
