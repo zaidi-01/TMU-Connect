@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from "axios";
 import * as authService from "../auth/auth.service";
 import { UserDto } from "./models";
 import { UserRole } from "@/enums";
+import { filter } from "rxjs/operators";
 /* eslint-enable no-unused-vars */
 
 // TODO: Use HTTP service once it's implemented.
@@ -16,6 +17,11 @@ const http = axios.create({
  * @type {Promise<User>}
  */
 let user = null;
+/**
+ * The authentication subscription.
+ * @type {Subscription}
+ */
+let authenticationSubscription = null;
 
 /**
  * Gets the current user.
@@ -36,6 +42,17 @@ export async function getCurrentUser() {
   );
 
   user = new Promise((resolve) => resolve(newUser));
+
+  /**
+   * Clears the user when the user is not authenticated.
+   */
+  if (!authenticationSubscription) {
+    authService.isAuthenticated$
+    .pipe(filter((isAuthenticated) => !isAuthenticated))
+    .subscribe(() => {
+      user = null;
+    });
+  }
 
   return user;
 }

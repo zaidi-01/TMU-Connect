@@ -83,7 +83,10 @@ export async function logout() {
   return new Promise((resolve, reject) => {
     http
       .post("/logout")
-      .then(() => resolve())
+      .then(() => {
+        _isAuthenticated$.next(false);
+        resolve();
+      })
       .catch((error) => reject(error));
   });
 }
