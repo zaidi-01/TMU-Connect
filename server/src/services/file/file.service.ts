@@ -37,6 +37,8 @@ export const upload = multer({
  * @returns A promise that resolves when the file is deleted.
  */
 export function deleteFile(filePath: string): Promise<void> {
+  filePath = filePath.replace(/^\//, "");
+  // TODO: Remove the directories if they are empty.
   return new Promise<void>((resolve, reject) => {
     fs.unlink(filePath, (err) => {
       if (err) {

@@ -132,22 +132,24 @@ export const updateAd = asyncHandler(async (req: Request, res: Response) => {
 export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const ad = (await prisma.ad.findUnique({
+  const ad = await prisma.ad.delete({
     where: {
       id: parseInt(id),
     },
-  })) as Ad;
+  });
 
   if (!ad) {
     res.sendStatus(404);
     return;
   }
 
-  await prisma.ad.delete({
-    where: {
-      id: parseInt(id),
-    },
-  });
+  if (ad.image) {
+    try {
+      await fileService.deleteFile(ad.image);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   res.sendStatus(204);
 });
