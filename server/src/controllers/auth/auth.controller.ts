@@ -1,5 +1,5 @@
 import { COOKIE_NAME } from "@constants";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, UserRole } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { Password } from "@utilities";
 import { Request, Response } from "express";
@@ -12,6 +12,8 @@ import { RegisterDto } from "./models";
 const prisma = new PrismaClient();
 
 /* Auth controller */
+
+seedAdminUser();
 
 /**
  * Check if the user is authenticated.
@@ -108,3 +110,30 @@ export const login = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (_, res) => {
   res.clearCookie(COOKIE_NAME).sendStatus(200);
 });
+
+/**
+ * Seed the database with a default admin user if it doesn't exist.
+ * TODO: Read admin credentials from environment variables.
+ */
+async function seedAdminUser() {
+  const hashedPassword = await Password.hashPassword("admin");
+
+  try {
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: "admin@torontomu.ca",
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+      } as User,
+    });
+    console.debug("Admin user created");
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      console.debug("Admin user already exists");
+    }
+  }
+}
