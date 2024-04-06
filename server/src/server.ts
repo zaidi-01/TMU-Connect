@@ -184,6 +184,9 @@ app.use(ROUTES.USER.BASE, authenticate(), userRoutes);
 
 /** Static files */
 
+// Serve uploads directory
+app.use(RELATIVE_ROUTES.UPLOADS, express.static(fileService.BASE_PATH));
+
 // Serve client files in production
 if (process.env.NODE_ENV === "production") {
   const CLIENT_DIST = "../client/dist";
@@ -192,9 +195,6 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile("index.html", { root: `${CLIENT_DIST}` });
   });
 }
-
-// Serve uploads directory
-app.use(RELATIVE_ROUTES.UPLOADS, express.static(fileService.BASE_PATH));
 
 /** Error handling middleware */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
