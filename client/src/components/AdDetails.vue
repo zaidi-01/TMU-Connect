@@ -4,21 +4,28 @@
   <div class="ad-details">
     <p v-if="!ad">Loading...</p>
     <template v-else>
-      <div class="ad-details-header">
-        <h1 class="ad-details-title">{{ ad.title }}</h1>
+      <div class="ad-details-image-view">
+        <img
+          :src="ad.image || '/not-found.jpg'"
+          alt="Ad image"
+          @error="(e) => (e.target.src = '/not-found.jpg')"
+        />
+      </div>
+      <div class="ad-details-info-view">
         <span>{{ $filters.formatDateTime(ad.createdAt) }}</span>
+        <h1 class="ad-details-title">{{ ad.title }}</h1>
+        <p class="ad-details-subtitle">
+          <span class="price">${{ ad.price }}</span> -
+          <span>{{ adTypeMap(ad.type) }}</span>
+        </p>
+        <div class="ad-details-description">
+          <p>{{ ad.description }}</p>
+        </div>
+        <form @submit.prevent="sendMessage" class="ad-details-footer">
+          <input v-model="newMessage" placeholder="Type a message..." />
+          <button type="submit">Send</button>
+        </form>
       </div>
-      <p class="ad-details-subtitle">
-        <span class="price">${{ ad.price }}</span> -
-        <span>{{ adTypeMap(ad.type) }}</span>
-      </p>
-      <div class="ad-details-description">
-        <p>{{ ad.description }}</p>
-      </div>
-      <form @submit.prevent="sendMessage" class="ad-details-footer">
-        <input v-model="newMessage" placeholder="Type a message..." />
-        <button type="submit">Send</button>
-      </form>
     </template>
   </div>
 </template>
@@ -93,6 +100,10 @@ export default {
 </script>
 
 <style scoped>
+p {
+  text-align: initial;
+}
+
 .ad-details-header {
   width: 100%;
   display: flex;
@@ -116,9 +127,25 @@ export default {
 .ad-details {
   height: 100%;
   display: flex;
+  padding: 160px 25% 60px 25%;
+}
+
+.ad-details-info-view {
+  flex: 1;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 160px 25% 60px 25%;
+}
+
+.ad-details-image-view {
+  margin-right: 20px;
+}
+
+.ad-details-image-view img {
+  width: 300px;
+  aspect-ratio: 1;
+  background-color: #e1eaf1;
+  object-fit: contain;
 }
 
 .ad-details-description {
