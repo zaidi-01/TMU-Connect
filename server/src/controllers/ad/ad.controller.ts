@@ -67,7 +67,7 @@ export const createAd = asyncHandler(async (req: Request, res: Response) => {
           id: createdAd.id,
         },
         data: {
-          image: imagePath,
+          image: `/${imagePath}`,
         },
       })) as AdDetailsDto;
     } catch (error) {
