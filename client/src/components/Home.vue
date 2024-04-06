@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="home">
     <Header />
 
-    <SearchBar v-model="searchQuery" @input="performSearch" />
+    <SearchBar @query="onSearch" />
 
     <div class="item-list">
       <p v-if="!ads">Loading ads...</p>
@@ -34,13 +34,16 @@ import SearchBar from "./SearchBar.vue";
 import { adService } from "@/services";
 import { AdDetails } from "@/models";
 import { AdType } from "@/enums";
+import { Subject } from "rxjs";
+import { debounceTime, takeUntil } from "rxjs/operators";
+import { AdFilterOptions } from "@/models";
 /* eslint-enable no-unused-vars */
 
 /**
  * Items per page.
  * @type {number}
  */
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 20;
 
 export default {
   name: "HomePage",
@@ -60,7 +63,21 @@ export default {
        * @type {boolean}
        */
       allAdsLoaded: false,
-      searchQuery: "",
+      /**
+       * Search query.
+       * @type {string}
+       */
+      query: "",
+      /**
+       * Search subject.
+       * @type {Subject<string>}
+       */
+      search$: new Subject(),
+      /**
+       * Destroy subject.
+       * @type {Subject<void>}
+       */
+      destroy$: new Subject(),
     };
   },
   methods: {
@@ -68,15 +85,18 @@ export default {
      * Load ads.
      */
     loadAds() {
+      const filterOptions = {
+        query: this.query,
+      };
+
       adService
-        .getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0)
+        .getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0, filterOptions)
         .then((ads) => {
           this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
           this.ads ? this.ads.push(...ads) : (this.ads = ads);
         })
         .catch((error) => console.error("Error fetching ads", error));
     },
-    performSearch() {},
     /**
      * Maps the ad type to a human-readable string.
      * @param {keyof AdType} type The ad type.
@@ -99,30 +119,56 @@ export default {
     viewAdDetails(adID) {
       this.$router.push(`/ad/${adID}`);
     },
+    /**
+     * Emits the search query.
+     * @param {string} query The search query.
+     */
+    onSearch(query) {
+      this.query = query;
+      this.search$.next(query);
+    },
   },
   mounted() {
     this.loadAds();
+
+    this.search$
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe((query) => {
+        /** @type {AdFilterOptions} */
+        const filterOptions = {
+          query,
+        };
+
+        adService
+          .getAds(ITEMS_PER_PAGE, 0, filterOptions)
+          .then((ads) => {
+            this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
+            this.ads = ads;
+          })
+          .catch((error) => console.error("Error searching ads", error));
+      });
+  },
+  beforeUnmount() {
+    this.destroy$.next();
+    this.destroy$.complete();
   },
 };
 </script>
 
 <style scoped>
+.home {
+  margin: 150px 0 20px 0;
+}
 
 button {
   cursor: pointer;
   background-color: rgb(255, 255, 138);
 }
 
-.search-bar {
-  margin-top: 150px;
-  align-items: center;
-}
-
 .item-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  
 }
 
 .item {
@@ -159,5 +205,4 @@ button {
   font-weight: bold;
   color: rgb(0, 0, 222);
 }
-
 </style>

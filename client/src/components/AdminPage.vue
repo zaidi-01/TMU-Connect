@@ -2,7 +2,6 @@
   <div class="admin-dashboard">
     <Header />
     <h1>Admin Dashboard</h1>
-    <SearchBar v-model="searchQuery" @input="performSearch" />
     <nav>
       <ul>
         <li @click="switchTab('ads')">Manage Ads</li>
@@ -53,6 +52,9 @@
 
     <section v-if="currentTab === 'ads'">
       <h2>Ads Management</h2>
+      <div class="search-bar">
+        <SearchBar @query="onSearch" />
+      </div>
       <span v-if="!ads">Loading...</span>
       <template v-if="ads">
         <table>
@@ -86,6 +88,8 @@ import { AdDetails, User } from "@/models";
 import { adService, userService } from "@/services";
 import Header from "./Header.vue";
 import SearchBar from "./SearchBar.vue";
+import { Subject } from "rxjs";
+import { debounceTime, takeUntil } from "rxjs/operators";
 /* eslint-enable no-unused-vars */
 
 /**
@@ -98,7 +102,7 @@ export default {
   name: "ItemsWanted",
   components: {
     Header,
-    SearchBar
+    SearchBar,
   },
   data() {
     return {
@@ -142,6 +146,21 @@ export default {
        * @type {keyof UserRole}
        */
       adminRole: UserRole.ADMIN,
+      /**
+       * Search query.
+       * @type {string}
+       */
+      query: "",
+      /**
+       * Search subject.
+       * @type {Subject<string>}
+       */
+      search$: new Subject(),
+      /**
+       * Destroy subject.
+       * @type {Subject<void>}
+       */
+      destroy$: new Subject(),
     };
   },
   methods: {
@@ -149,8 +168,12 @@ export default {
      * Loads the ads.
      */
     loadAds() {
+      const filterOptions = {
+        query: this.query,
+      };
+
       adService
-        .getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0)
+        .getAds(ITEMS_PER_PAGE, this.ads ? this.ads.length : 0, filterOptions)
         .then((ads) => {
           this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
           this.ads ? this.ads.push(...ads) : (this.ads = ads);
@@ -257,15 +280,46 @@ export default {
             "Failed to change user role. Please try again later.";
         });
     },
+    /**
+     * Emits the search query.
+     * @param {string} query The search query.
+     */
+    onSearch(query) {
+      this.query = query;
+      this.search$.next(query);
+    },
   },
   mounted() {
     this.switchTab("ads");
     userService.getCurrentUser().then((user) => (this.userId = user.id));
+    this.search$
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe((query) => {
+        const filterOptions = {
+          query,
+        };
+
+        adService
+          .getAds(ITEMS_PER_PAGE, 0, filterOptions)
+          .then((ads) => {
+            this.allAdsLoaded = ads.length < ITEMS_PER_PAGE;
+            this.ads = ads;
+          })
+          .catch((error) => console.error("Error fetching ads", error));
+      });
+  },
+  beforeUnmount() {
+    this.destroy$.next();
+    this.destroy$.complete();
   },
 };
 </script>
 
 <style scoped>
+.admin-dashboard {
+  margin-bottom: 20px;
+}
+
 .admin-dashboard h1 {
   text-align: center;
   padding-top: 150px;
@@ -328,5 +382,9 @@ thead .actions {
 tbody .actions {
   display: flex;
   justify-content: space-around;
+}
+
+.search-bar {
+  margin-bottom: 20px;
 }
 </style>
