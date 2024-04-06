@@ -131,7 +131,6 @@ export const updateAd = asyncHandler(async (req: Request, res: Response) => {
  */
 export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const userId = (req.user as User).id;
 
   const ad = (await prisma.ad.findUnique({
     where: {
@@ -141,11 +140,6 @@ export const deleteAd = asyncHandler(async (req: Request, res: Response) => {
 
   if (!ad) {
     res.sendStatus(404);
-    return;
-  }
-
-  if (ad.userId !== userId) {
-    res.sendStatus(403);
     return;
   }
 
