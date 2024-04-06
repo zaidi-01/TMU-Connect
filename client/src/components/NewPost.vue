@@ -4,10 +4,10 @@
 
     <div class="post-container">
       <h2>Post a New Ad</h2>
-      <div class="post-form">
+      <form class="post-form" @submit.prevent="createAd($event.target)">
         <div class="type" type="type">
           <label>Post Type:</label>
-          <select v-model="type">
+          <select required name="type">
             <option value="SALE">Item for Sale</option>
             <option value="WANTED">Item Wanted</option>
             <option value="SERVICE">Academic Service</option>
@@ -15,42 +15,44 @@
         </div>
         <div>
           <label>Title:</label>
-          <input required type="text" v-model="title" />
+          <input required name="title" type="text" />
         </div>
 
-        <!-- TODO: Add image upload functionality
         <div class="image-upload">
           <input
+            name="image"
             id="file-upload"
             type="file"
-            @change="handleImageUpload"
-            accept="image/"
+            accept="image/*"
             style="display: none"
+            @change="handleImageUpload"
           />
           <label for="file-upload" class="custom-file-upload">
-            <i class="fas fa-plus">+</i>
+            <div class="image-upload-overlay">
+              <i v-if="!imageData" class="fas fa-plus">+</i>
+            </div>
+            <img v-if="imageData" :src="imageData" alt="Ad Image" />
           </label>
-        </div> -->
+        </div>
 
         <div class="description">
           <label>Description:</label>
-          <textarea required rows="4" v-model="description"></textarea>
+          <textarea required name="description" rows="4"></textarea>
         </div>
 
         <div class="price">
           <label>Price:</label>
-          <input required type="number" v-model="price" />
+          <input required name="price" type="number" />
         </div>
 
-        <button @click="createAd">Create Ad</button>
-      </div>
+        <button>Create Ad</button>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
 import Header from "./Header.vue";
-import { AdType } from "@/enums";
 import { adService } from "@/services";
 
 export default {
@@ -60,33 +62,52 @@ export default {
   },
   data() {
     return {
-      type: AdType.SALE,
-      title: "",
-      description: "",
-      price: "",
+      imageData: null,
     };
   },
-
   methods: {
-    createAd() {
-      if (!this.title || !this.description || !this.price) {
+    /**
+     * Create a new ad.
+     */
+    createAd(formData) {
+      const type = formData.type.value;
+      const title = formData.title.value;
+      const description = formData.description.value;
+      const price = parseFloat(formData.price.value);
+
+      if (!title || !description || !price || !type) {
         return;
       }
 
+      const image = formData.image.files[0];
+
       adService
-        .createAd(this.title, this.description, this.price, this.type)
+        .createAd(title, description, price, type, image)
         .then(() => {
           window.alert("Your ad has been created successfully");
 
-          this.type = AdType.SALE;
-          this.title = "";
-          this.description = "";
-          this.price = null;
+          this.imageData = null;
+          formData.reset();
         })
         .catch((error) => {
           console.error("Error creating ad", error);
           window.alert("Failed to create ad. Please try again.");
         });
+    },
+    /**
+     * Handle image upload.
+     */
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imageData = e.target.result;
+      };
+      reader.readAsDataURL(file);
     },
   },
 };
@@ -156,7 +177,6 @@ export default {
 }
 
 .custom-file-upload {
-  display: fixed;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -166,10 +186,33 @@ export default {
   border-radius: 8px;
   cursor: pointer;
   font-size: 100px;
+  overflow: hidden;
+  position: relative;
 }
 
-.custom-file-upload:hover {
-  background-color: rgb(212, 212, 212);
+.image-upload-overlay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.image-upload-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .type {

@@ -28,6 +28,10 @@ import { AdType } from "../enums";
  *           format: float
  *           description: The price of the ad
  *           example: 8499.99
+ *         image:
+ *           type: string
+ *           description: The image of the ad
+ *           example: "ad/1/image.jpg"
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -60,6 +64,8 @@ interface AdDetailsDto {
   description: string;
   /** The price of the ad. */
   price: number | undefined;
+  /** The image of the ad. */
+  image: string | undefined;
   /** The date when the ad was created. */
   createdAt: Date;
   /** The date when the ad was last updated. */

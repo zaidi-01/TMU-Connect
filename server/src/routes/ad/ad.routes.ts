@@ -2,12 +2,13 @@ import { RELATIVE_ROUTES } from "@constants";
 import { adController } from "@controllers";
 import { UserRole } from "@enums";
 import { allow } from "@middlewares";
+import { fileService } from "@services";
 import express from "express";
 
-/** Express router */
+/* Express router */
 const router = express.Router();
 
-/** Ad routes */
+/* Ad routes */
 
 // TODO: Add error responses for all routes.
 
@@ -33,7 +34,11 @@ const router = express.Router();
  *             schema:
  *               $ref: "#/components/schemas/AdDetailsDto"
  */
-router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
+router.post(
+  RELATIVE_ROUTES.AD.CREATE,
+  fileService.upload.single("image"),
+  adController.createAd
+);
 
 /**
  * Update an ad.
@@ -63,7 +68,11 @@ router.post(RELATIVE_ROUTES.AD.CREATE, adController.createAd);
  *             schema:
  *               $ref: "#/components/schemas/AdDetailsDto"
  */
-router.put(RELATIVE_ROUTES.AD.UPDATE, allow(UserRole.ADMIN), adController.updateAd);
+router.put(
+  RELATIVE_ROUTES.AD.UPDATE,
+  allow(UserRole.ADMIN),
+  adController.updateAd
+);
 
 /**
  * Delete an ad.
@@ -83,7 +92,11 @@ router.put(RELATIVE_ROUTES.AD.UPDATE, allow(UserRole.ADMIN), adController.update
  *       204:
  *         description: Ad deleted
  */
-router.delete(RELATIVE_ROUTES.AD.DELETE, allow(UserRole.ADMIN), adController.deleteAd);
+router.delete(
+  RELATIVE_ROUTES.AD.DELETE,
+  allow(UserRole.ADMIN),
+  adController.deleteAd
+);
 
 /**
  * Get ad details.

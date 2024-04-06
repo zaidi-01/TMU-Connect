@@ -108,6 +108,7 @@ export default {
   padding: 0px;
   margin: 0px;
   color: black;
+  z-index: 1000;
 }
 
 .logo-menu-container {
