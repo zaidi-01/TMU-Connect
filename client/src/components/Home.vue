@@ -14,6 +14,11 @@
         :key="ad.id"
         @click="viewAdDetails(ad.id)"
       >
+        <img
+          :src="ad.image || '/not-found.jpg'"
+          alt="Ad image"
+          @error="(e) => (e.target.src = '/not-found.jpg')"
+        />
         <h3>{{ ad.title }}</h3>
         <p>{{ adTypeMap(ad.type) }}</p>
         <p class="description">{{ ad.description }}</p>
@@ -181,9 +186,11 @@ button {
 }
 
 .item img {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  aspect-ratio: 1;
   margin-bottom: 10px;
+  background-color: #e1eaf1;
+  object-fit: contain;
 }
 
 .item h3 {
